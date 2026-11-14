@@ -43,6 +43,15 @@ describe("predicted scanpath", () => {
     expect(ctaHit.i).toBe(1);
   });
 
+  it("counts a fixation just above the button as a CTA hit, with the same margin on both axes", () => {
+    // A 2:1 map with its peak 0.008 image widths above the button (0.016 of the height).
+    const map = saliency(64, 32, [[0.3, 0.6, 1]]);
+    const cta = { box: { x: 0.23, y: 0.616, w: 0.1, h: 0.04 } };
+    const { ctaHit } = computeScanpath(map, { cta });
+    expect(ctaHit).not.toBeNull();
+    expect(ctaHit.i).toBe(0);
+  });
+
   it("is deterministic and handles an empty map", () => {
     expect(computeScanpath(map())).toEqual(computeScanpath(map()));
     expect(computeScanpath({ w: 8, h: 8, map: new Float32Array(64) })).toEqual({
