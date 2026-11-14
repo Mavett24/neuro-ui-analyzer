@@ -9,18 +9,18 @@ import { fit, inkTone, rgb, sampleGrid, tween, ease } from "./pixel";
 const COLS = 120,
   ROWS = 60;
 const FOUND = [
-  { kind: "Text", label: "Headline", box: [0.04, 0.26, 0.43, 0.2] },
-  { kind: "Text", label: "Body copy", box: [0.04, 0.48, 0.36, 0.13] },
-  { kind: "Action", label: "Primary CTA", box: [0.043, 0.655, 0.125, 0.085] },
-  { kind: "Action", label: "Secondary link", box: [0.175, 0.665, 0.09, 0.065] },
-  { kind: "Action", label: "Nav, 5 links", box: [0.62, 0.035, 0.34, 0.065] },
-  { kind: "Reward", label: "Price figure", box: [0.52, 0.28, 0.17, 0.11] },
-  { kind: "Object", label: "Product chart", box: [0.52, 0.5, 0.43, 0.24] },
-  { kind: "Social", label: "Logo strip", box: [0.04, 0.82, 0.38, 0.065] },
+  { kind: "Text", label: "Headline", box: [0.227, 0.255, 0.245, 0.112] },
+  { kind: "Text", label: "Body copy", box: [0.227, 0.45, 0.212, 0.138] },
+  { kind: "Action", label: "Primary CTA", box: [0.228, 0.612, 0.108, 0.05] },
+  { kind: "Action", label: "Secondary link", box: [0.34, 0.612, 0.072, 0.05] },
+  { kind: "Action", label: "Nav, 5 links", box: [0.455, 0.013, 0.171, 0.03] },
+  { kind: "Object", label: "3D sculpture", box: [0.513, 0.181, 0.279, 0.569] },
+  { kind: "Social", label: "Published paper", box: [0.51, 0.893, 0.131, 0.074] },
+  { kind: "Reward", label: "Award", box: [0.66, 0.893, 0.131, 0.074] },
 ];
 const COUNTS = [
-  ["Text", "2 blocks"],
-  ["Actions", "7"],
+  ["Text", "3 blocks"],
+  ["Actions", "8"],
   ["Reward cues", "1"],
   ["Faces", "0"],
 ];

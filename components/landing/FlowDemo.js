@@ -169,16 +169,16 @@ function UploadViz() {
         </div>
         <ul>
           <li>
-            <span>file</span>payloom-landing.png
+            <span>file</span>portfolio-home.jpg
           </li>
           <li>
-            <span>size</span>1440 × 720 px
+            <span>size</span>1440 × 712 px
           </li>
           <li>
             <span>format</span>desktop, wide
           </li>
           <li>
-            <span>hash</span>sha-256 a91f…e07c
+            <span>hash</span>sha-256 37aa…4fd7
           </li>
         </ul>
       </div>
@@ -231,7 +231,7 @@ function HeatViz({ sample }) {
               height: `${cta.h * 100}%`,
             }}
           >
-            <b>CTA seen at {(sample.ctaHit.start / 1000).toFixed(1)}s</b>
+            <b>{sample.ctaHit ? `CTA seen at ${(sample.ctaHit.start / 1000).toFixed(1)}s` : "CTA not reached in 3s"}</b>
           </span>
         )}
       </div>
@@ -294,14 +294,22 @@ function CheckViz({ sample }) {
     return () => cancelAnimationFrame(t);
   }, []);
   if (!s) return <div className="v-check" />;
+  // Values and statuses come straight from the analyzer's reading of the sample (public/demo/sample.json).
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
   const rows = [
-    { label: "White space", to: Math.round(s.whitespace), unit: "% empty", status: "good", fill: s.whitespace / 100 },
-    { label: "Visual clutter", to: s.clutter, unit: "of 100", status: "info", fill: s.clutter / 100 },
+    {
+      label: "White space",
+      to: Math.round(s.whitespace),
+      unit: "% empty",
+      status: s.status.whitespace,
+      fill: s.whitespace / 100,
+    },
+    { label: "Visual clutter", to: s.clutter, unit: "of 100", status: s.status.clutter, fill: s.clutter / 100 },
     {
       label: "Colour palette",
       to: s.hues,
-      unit: `hue family, ${s.neutrals} neutral`,
-      status: "good",
+      unit: `${s.hues === 1 ? "hue family" : "hue families"}, ${plural(s.neutrals, "neutral", "neutrals")}`,
+      status: s.status.palette,
       fill: s.hues / 6,
     },
     {
@@ -309,18 +317,20 @@ function CheckViz({ sample }) {
       to: s.cta.contrast,
       decimals: 2,
       unit: ": 1, needs 3",
-      status: "good",
+      status: s.status.cta,
       fill: s.cta.contrast / 7,
     },
     {
       label: "Attention on CTA",
-      to: Math.round(sample.ctaHit.value * 100),
+      to: s.cta.attentionPct,
       unit: "% of peak",
-      status: "info",
-      fill: sample.ctaHit.value,
+      status: s.status.attention,
+      fill: s.cta.attentionPct / 100,
     },
   ];
   const ok = rows.filter((r) => r.status === "good").length;
+  const issues = rows.filter((r) => r.status === "warn").length;
+  const clutter = s.clutter < 30 ? "low" : s.clutter < 60 ? "moderate" : "high";
   return (
     <div className={`v-check ${lit ? "lit" : ""}`}>
       <div className="c-score">
@@ -332,8 +342,8 @@ function CheckViz({ sample }) {
           <span className="c-cap">measures pass</span>
         </div>
         <p>
-          {rows.length - ok} notes, 0 issues. Clutter is moderate and the button gets about a quarter of the peak
-          attention.
+          {plural(rows.length - ok - issues, "note", "notes")}, {plural(issues, "issue", "issues")}. Clutter is{" "}
+          {clutter} and the button gets {s.cta.attentionPct}% of the peak attention.
         </p>
       </div>
       <ol>
@@ -347,12 +357,12 @@ function CheckViz({ sample }) {
 
 // Example weights for the sample page, from the same function the analyzer uses.
 const SAMPLE_WEIGHTS = computeWeights({
-  clutterEdgeDensityPct: 7,
-  rmsContrast: 0.21,
+  clutterEdgeDensityPct: 10.9,
+  rmsContrast: 0.141,
   hueFamilies: 1,
-  chromaticAreaPct: 14,
-  whitespacePct: 66,
-  balance: { leftRight: 0.71 },
+  chromaticAreaPct: 1,
+  whitespacePct: 73.3,
+  balance: { leftRight: 0.79 },
 }).filter((w) => !w.pending);
 
 function BrainViz() {
@@ -381,25 +391,30 @@ function BrainViz() {
 const REVIEW = [
   [
     "verdict",
-    "The headline wins the first fixation, but **the primary button is only reached at 1.7s**, after three stops in the hero copy.",
+    "The headline wins the first fixation and **the orange button is reached third, at 0.9s**, after a detour to the 3D object. After that the gaze returns to the headline and never comes back to it.",
   ],
   [
     "issue",
-    "**Hero CTA** sits below the reading line and shares its tone with the secondary link, so visual hierarchy does not single it out.",
+    "**The 3D object** takes the second fixation and three of the nine overall, pulling attention off the copy. Its motion will pull harder than this still-image prediction shows.",
   ],
   [
     "issue",
-    "**Logo strip** competes with the subhead for the second fixation. Gestalt proximity groups it with the hero.",
+    "**Button label contrast** is 3.8:1, white on orange. That passes for the button shape but falls short of the 4.5:1 WCAG asks for text at this size.",
   ],
-  ["change", "**Raise the button** into the first screen third and give it the only filled accent on the page."],
+  [
+    "change",
+    "**Calm the 3D piece** with a slower idle state so the copy and button keep the early fixations, and darken the orange until the label reaches 4.5:1.",
+  ],
 ];
+// Content weights for the sample, from computeWeights with the content an analyst would detect
+// (moderate text, no faces, one 3D object, an award badge, about eight choices).
 const DEEP = [
-  ["Reading", 0.62],
+  ["Reading", 0.5],
   ["Faces", 0],
-  ["Objects", 0.31],
-  ["Scenes", 0.08],
+  ["Objects", 0.28],
+  ["Scenes", 0],
   ["Reward and value", 0.33],
-  ["Decision making", 0.5],
+  ["Decision making", 0.79],
 ];
 
 // Where each review line starts in the typed-out text (lines are joined with a newline).
@@ -462,7 +477,7 @@ function DeepViz() {
         })}
       </div>
       <p className="v-note">
-        Example output on the sample page. Principles named: visual hierarchy, Gestalt proximity.
+        Example output on the sample page. Principles named: visual hierarchy, WCAG 2.2 text contrast.
       </p>
     </div>
   );

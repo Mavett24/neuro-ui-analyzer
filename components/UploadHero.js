@@ -50,7 +50,7 @@ export default function UploadHero({ onFile, onBrowse, error }) {
     setLoadingSample(true);
     try {
       const blob = await fetch("/demo/sample.jpg").then((r) => r.blob());
-      onFile(new File([blob], "payloom-landing.jpg", { type: blob.type }));
+      onFile(new File([blob], "portfolio-home.jpg", { type: blob.type }));
     } catch {
       setLoadingSample(false);
     }
