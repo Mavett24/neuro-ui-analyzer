@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLatest } from "../lib/hooks";
 import { blend, loadBrainData } from "../lib/brain";
 import BrainSurface from "./BrainSurface";
 import { REGIONS } from "../lib/regions";
@@ -170,7 +171,11 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => 
 
 function Reveal({ onProgress, onDone }) {
   const ref = useRef(null);
+  const progressCb = useLatest(onProgress);
+  const doneCb = useLatest(onDone);
   useEffect(() => {
+    const onProgress = (p) => progressCb.current(p);
+    const onDone = () => doneCb.current();
     const canvas = ref.current;
     const ctx = canvas.getContext("2d");
     const cell = 12;
@@ -235,7 +240,7 @@ function Reveal({ onProgress, onDone }) {
       seen.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [progressCb, doneCb]);
   return <canvas ref={ref} className="brain-reveal" aria-hidden="true" />;
 }
 

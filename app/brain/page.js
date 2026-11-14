@@ -1,7 +1,7 @@
 "use client";
 
 // Standalone demo of the brain viewer with sample weights: http://localhost:3000/brain
-import { useEffect, useState } from "react";
+import { useBrowserValue } from "../../lib/hooks";
 import BrainViewer from "../../components/BrainViewer";
 import { computeWeights } from "../../lib/brain";
 
@@ -18,8 +18,7 @@ const sampleFeatures = { textAmount: 0.6, faces: 1, objectImagery: 0.3, sceneIma
 const weights = computeWeights(sampleMetrics, sampleFeatures);
 
 export default function BrainDemo() {
-  const [view, setView] = useState(null);
-  useEffect(() => setView(new URLSearchParams(window.location.search).get("view") || "surface"), []);
+  const view = useBrowserValue(() => new URLSearchParams(window.location.search).get("view") || "surface", null);
   if (!view) return null;
   return (
     <main>

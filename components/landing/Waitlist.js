@@ -25,7 +25,7 @@ export default function Waitlist() {
       <div className="wl-done" role="status">
         <span className="wl-check" aria-hidden="true" />
         <div>
-          <strong>You're on the list.</strong>
+          <strong>You&apos;re on the list.</strong>
           <p>One email to {email.trim()} when the full version opens. Nothing else.</p>
         </div>
       </div>

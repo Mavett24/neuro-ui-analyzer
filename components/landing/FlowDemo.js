@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "../../lib/hooks";
 import { drawHeatmap } from "../../lib/saliency";
 import { computeWeights } from "../../lib/brain";
 import PixelBrain from "./PixelBrain";
@@ -65,12 +66,11 @@ export default function FlowDemo() {
   const [run, setRun] = useState(0); // bumps on every activation, restarts the step's visual
   const [inView, setInView] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [reduce, setReduce] = useState(false);
+  const reduce = useReducedMotion();
   const root = useRef(null);
   const sample = useSample();
 
   useEffect(() => {
-    setReduce(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.35 });
     io.observe(root.current);
     return () => io.disconnect();
@@ -232,9 +232,9 @@ function HeatViz({ sample }) {
 
 function useCount(to, ms = 900, delay = 0, decimals = 0) {
   const [v, setV] = useState(0);
+  const reduce = useReducedMotion();
   useEffect(() => {
-    if (to == null) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setV(to);
+    if (to == null || reduce) return;
     let frame;
     const t0 = performance.now() + delay;
     const tick = (now) => {
@@ -245,8 +245,8 @@ function useCount(to, ms = 900, delay = 0, decimals = 0) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [to, ms, delay, decimals]);
-  return v;
+  }, [to, ms, delay, decimals, reduce]);
+  return reduce && to != null ? to : v;
 }
 
 function CheckRow({ label, to, decimals = 0, unit, status, fill, i }) {
@@ -355,11 +355,19 @@ const DEEP = [
   ["Decision making", 0.5],
 ];
 
+// Where each review line starts in the typed-out text (lines are joined with a newline).
+const REVIEW_START = REVIEW.reduce(
+  (acc, [, text], r) => [...acc, r ? acc[r - 1] + REVIEW[r - 1][1].replace(/\*\*/g, "").length + 1 : 0],
+  []
+);
+
 function DeepViz() {
   const full = REVIEW.map(([, t]) => t.replace(/\*\*/g, "")).join("\n");
-  const [n, setN] = useState(0);
+  const [typed, setN] = useState(0);
+  const reduce = useReducedMotion();
+  const n = reduce ? full.length : typed;
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setN(full.length);
+    if (reduce) return;
     const start = performance.now() + 500;
     let frame;
     const tick = (now) => {
@@ -369,10 +377,9 @@ function DeepViz() {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [full.length]);
+  }, [full.length, reduce]);
 
   // Reveal the review character by character while keeping its bold labels.
-  let left = n;
   return (
     <div className="v-deep">
       <ul className="d-chips">
@@ -387,8 +394,7 @@ function DeepViz() {
         {REVIEW.map(([kind, text], r) => {
           const parts = text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
           const plainLen = text.replace(/\*\*/g, "").length;
-          const show = left;
-          left = Math.max(0, left - plainLen - 1);
+          const show = Math.max(0, n - REVIEW_START[r]);
           if (show <= 0) return null;
           let budget = show;
           const done = show >= plainLen;

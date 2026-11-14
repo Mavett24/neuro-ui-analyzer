@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLatest } from "../../lib/hooks";
 import { C, bayer, ease, fit, inkTone, rgb, sampleGrid, tween } from "./pixel";
 import { useSample } from "./useSample";
 
@@ -68,6 +69,8 @@ export default function PixelBlocks() {
       }
   };
 
+  const drawRef = useLatest(draw);
+
   useEffect(() => {
     if (!grid) return;
     const s = state.current;
@@ -76,16 +79,16 @@ export default function PixelBlocks() {
     s.shown = true;
     const cancel = tween(s.from < 0 ? 800 : 320, (k) => {
       s.k = s.from < 0 ? ease(k) : k;
-      draw();
+      drawRef.current();
     });
     return cancel;
-  }, [grid, mode, sample]);
+  }, [grid, mode, sample, drawRef]);
 
   useEffect(() => {
-    const ro = new ResizeObserver(draw);
+    const ro = new ResizeObserver(() => drawRef.current());
     ro.observe(canvas.current);
     return () => ro.disconnect();
-  });
+  }, [drawRef]);
 
   // Balance share from the same blocks, so the number matches the picture.
   let left = 0, right = 0;
