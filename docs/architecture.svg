@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 700" width="1280" height="700" role="img" aria-labelledby="t d">
+  <title id="t">Neuro UI Analyzer architecture</title>
+  <desc id="d">A screenshot is decoded in the browser and runs through three on-device stages: layout heuristics, a gaze model and brain weighting. Results are shown as a report and saved to IndexedDB. An optional deep analysis sends a downscaled copy to two server routes that call the Gemini API.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#859984"/>
+    </marker>
+    <marker id="al" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#7fee64"/>
+    </marker>
+    <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="7" y="7" width="2" height="2" fill="#1c241c"/>
+    </pattern>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; fill: #ddffdc; }
+      .m { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+      .h { font-size: 19px; font-weight: 600; letter-spacing: -0.2px; }
+      .s { font-size: 13.5px; fill: #8cab87; }
+      .f { font-size: 12px; fill: #677d64; }
+      .e { font-size: 11.5px; font-weight: 600; letter-spacing: 1.4px; fill: #9cbf93; }
+      .el { fill: #7fee64; }
+      .lbl { font-size: 12px; fill: #859984; }
+      .box { fill: #181818; stroke: #485346; stroke-width: 1.2; }
+      .key { fill: #181818; stroke: #7fee64; stroke-width: 1.4; }
+      .ln { stroke: #859984; stroke-width: 1.6; fill: none; }
+      .lnl { stroke: #7fee64; stroke-width: 1.6; fill: none; stroke-dasharray: 6 5; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="700" rx="18" fill="#000"/>
+  <rect width="1280" height="700" rx="18" fill="url(#dots)"/>
+
+  <!-- Input -->
+  <g>
+    <rect class="box" x="36" y="300" width="168" height="96" rx="10"/>
+    <text class="t h" x="56" y="336">Screenshot</text>
+    <text class="t s" x="56" y="360">PNG, JPG or WebP</text>
+    <text class="t f m" x="56" y="381">drop · paste · pick</text>
+  </g>
+
+  <!-- Browser panel -->
+  <rect x="236" y="40" width="760" height="620" rx="14" fill="#0b0d0b" stroke="#3e4a3c" stroke-width="1.2"/>
+  <text class="t e" x="262" y="74">IN THE BROWSER</text>
+  <text class="t lbl" x="402" y="74">nothing leaves the device</text>
+
+<path class="ln" d="M204 348 L 260 348" marker-end="url(#a)"/>
+  <rect class="box" x="262" y="292" width="176" height="112" rx="10"/>
+  <text class="t h" x="280" y="326">Decode</text>
+  <text class="t s" x="280" y="350">createImageBitmap,</text>
+  <text class="t s" x="280" y="369">stepped downscale</text>
+  <text class="t f m" x="280" y="391">heuristics.js</text>
+
+  <!-- Lanes -->
+  <g>
+    <rect class="box" x="500" y="104" width="470" height="118" rx="10"/>
+    <text class="t e el" x="522" y="134">01</text>
+    <text class="t h" x="552" y="135">Layout heuristics</text>
+    <text class="t s" x="522" y="162">8 px blocks, OKLab palette, WCAG 2.2 contrast,</text>
+    <text class="t s" x="522" y="181">filled-button detection with a confidence score</text>
+    <text class="t f m" x="522" y="206">heuristics.js · cta.js</text>
+  </g>
+  <g>
+    <rect class="box" x="500" y="252" width="470" height="118" rx="10"/>
+    <text class="t e el" x="522" y="282">02</text>
+    <text class="t h" x="552" y="283">Gaze model</text>
+    <text class="t s" x="522" y="310">UNISAL (ONNX Runtime, WASM) predicts a saliency map,</text>
+    <text class="t s" x="522" y="329">then winner-take-all with inhibition of return</text>
+    <text class="t f m" x="522" y="354">saliency.js · scanpath.js</text>
+  </g>
+  <g>
+    <rect class="box" x="500" y="400" width="470" height="118" rx="10"/>
+    <text class="t e el" x="522" y="430">03</text>
+    <text class="t h" x="552" y="431">Brain weighting</text>
+    <text class="t s" x="522" y="458">metrics become weights on 10 NeuroQuery maps,</text>
+    <text class="t s" x="522" y="477">drawn on the ICBM152 cortex and as MRI slices</text>
+    <text class="t f m" x="522" y="502">brain.js · Niivue · three.js</text>
+  </g>
+
+  <!-- Decode to lanes -->
+  <path class="ln" d="M438 330 C 470 330, 466 163, 498 163" marker-end="url(#a)"/>
+  <path class="ln" d="M438 348 L 498 311" marker-end="url(#a)"/>
+  <path class="ln" d="M438 366 C 470 366, 466 459, 498 459" marker-end="url(#a)"/>
+
+  <!-- Cross-lane data -->
+  <path class="ln" d="M935 222 L 935 250" marker-end="url(#a)"/>
+  <text class="t lbl" x="852" y="241">CTA box</text>
+  <path class="ln" d="M970 196 H 978 Q 984 196 984 202 V 420 Q 984 426 978 426 H 972" marker-end="url(#a)"/>
+  <text class="t lbl" x="976" y="384" text-anchor="end">metrics</text>
+
+  <!-- Report and history -->
+  <rect class="key" x="262" y="562" width="708" height="70" rx="10"/>
+  <text class="t h" x="284" y="594">Report</text>
+  <text class="t s" x="284" y="616">attention, layout and brain pages</text>
+  <text class="t h" x="620" y="594">History</text>
+  <text class="t s" x="620" y="616">IndexedDB, keyed by a SHA-256 of the image</text>
+  <line x1="596" y1="574" x2="596" y2="620" stroke="#3e4a3c"/>
+  <path class="ln" d="M735 518 L 735 560" marker-end="url(#a)"/>
+
+  <!-- Server panel -->
+  <rect x="1028" y="104" width="216" height="414" rx="14" fill="#0b0d0b" stroke="#7fee64" stroke-width="1.2" stroke-dasharray="6 5"/>
+  <text class="t e el" x="1050" y="138">OPT-IN</text>
+  <text class="t lbl" x="1050" y="158">deep research analysis</text>
+
+  <rect class="box" x="1048" y="178" width="176" height="64" rx="10"/>
+  <text class="t m" x="1064" y="206" font-size="14" fill="#ddffdc">/api/features</text>
+  <text class="t f" x="1064" y="228">content as numbers</text>
+
+  <rect class="box" x="1048" y="258" width="176" height="64" rx="10"/>
+  <text class="t m" x="1064" y="286" font-size="14" fill="#ddffdc">/api/review</text>
+  <text class="t f" x="1064" y="308">streamed written review</text>
+
+  <rect class="key" x="1048" y="400" width="176" height="96" rx="10"/>
+  <text class="t h" x="1064" y="432">Gemini API</text>
+  <text class="t s" x="1064" y="456">free tier, key kept</text>
+  <text class="t s" x="1064" y="475">on the server</text>
+  <path class="ln" d="M1224 210 H 1234 V 448 H 1226" marker-end="url(#a)"/>
+  <path class="ln" d="M1224 290 H 1234"/>
+
+  <!-- Browser to server and back -->
+  <path class="lnl" d="M970 466 H 1026" marker-end="url(#al)"/>
+  <path class="lnl" d="M1028 494 H 972" marker-end="url(#al)"/>
+  <text class="t lbl" x="1136" y="548" text-anchor="middle">JPEG copy + metrics out;</text>
+  <text class="t lbl" x="1136" y="566" text-anchor="middle">content functions and review back</text>
+</svg>
