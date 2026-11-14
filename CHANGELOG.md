@@ -13,10 +13,16 @@ First working beta.
 - Six pixel-based layout diagnostics with explanations, and filled-button CTA detection with a confidence score.
 - Brain view with ten NeuroQuery maps on a 3D cortex and as MRI slices.
 - Optional deep research analysis through Gemini: content detection and a streamed written review.
-- Landing page with a waitlist form.
+- Landing page with a waitlist form, and a sample design to try the analyzer on.
 - History of analyses stored in IndexedDB.
 - Unit tests for the layout heuristics, CTA detection, scanpath and brain weighting, including a determinism check.
 - ESLint, Prettier and a GitHub Actions workflow that lints, tests and builds every push.
 - Method, architecture, security and contributing docs, third-party notices and an MIT license.
+
+### Fixed
+
+- CTA detection read thin, antialiased button labels as low contrast, so an accent button could lose to a neutral nav button. Labels are now read from their stroke cores, and a close-scoring accent button wins over a neutral one.
+- The CTA hit margin was converted with the wrong aspect ratio, which made it four times too small vertically on wide screenshots.
+- "1 hue families" now reads "1 hue family".
 
 [0.1.0]: https://github.com/mavett24/neuro-ui-analyzer/releases/tag/v0.1.0

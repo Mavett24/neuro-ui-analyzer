@@ -23,7 +23,7 @@ The order of fixations in the first 3 seconds, from the classic winner-take-all 
 3. Suppress the area just fixated. The radius is about 2° of visual angle: 0.07 image widths on desktop and 0.16 on a phone, which is held closer.
 4. Repeat until 3 seconds or 14 fixations.
 
-Fixation duration scales with salience (190 to 400 ms). Saccade time scales with distance (30 to 140 ms). The CTA counts as seen when a fixation lands inside its box.
+Fixation duration scales with salience (190 to 400 ms). Saccade time scales with distance (30 to 140 ms). The CTA counts as seen when a fixation lands inside its box or within 0.01 image widths of it, since gaze is only precise to a fraction of a degree.
 
 **Assumes:** free viewing with no task; a still image, so animation is underrated; and a model trained on natural images, which makes it a prior for UIs, not a recording.
 
@@ -37,7 +37,7 @@ All computed from pixels, with no AI (`lib/heuristics.js`). The image is analyze
 | Visual clutter | `100 × min(1, 2.2 × edge density + 0.4 × occupied area + 0.12 × colour variety)`. On calm pages, photo areas are partly discounted, so a quiet hero image doesn't read as clutter. |
 | Colour palette | Flat fills are clustered in OKLab (distance 0.055 merges shades). Chroma under 0.04 counts as neutral. Hues within 32° form one family. Gradients and imagery are excluded, which is why a monochrome page with photos reads as 0 hue families. |
 | Left / right balance | Detail weight in the left half against the right half, where 1 means equal. |
-| Primary CTA | `lib/cta.js` looks for a filled region with straight edges, button proportions, a contrasting label inside and a different colour around it. Each candidate is scored. Below a confidence of 0.34 the answer is "no CTA found" rather than a guess. Contrast is checked against WCAG 2.2 SC 1.4.11 (3:1 for UI components). |
+| Primary CTA | `lib/cta.js` looks for a filled region with straight edges, button proportions, a contrasting label inside and a different colour around it. The label colour is read from its stroke cores, because small text is antialiased into the fill. Each candidate is scored. Below a confidence of 0.34 the answer is "no CTA found" rather than a guess. When a saturated button and a neutral one score within 20% of each other, the saturated one wins: by convention the primary action carries the accent colour. Contrast is checked against WCAG 2.2 SC 1.4.11 (3:1 for UI components). |
 | Attention on CTA | Highest predicted attention inside the CTA box, as a percentage of the page's peak. |
 
 **Assumes:** only filled buttons count as CTA candidates (ghost buttons and text links are skipped), and thresholds are general guidance, not rules for every kind of screen.
