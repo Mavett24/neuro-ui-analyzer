@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLatest } from "../../lib/hooks";
 import * as THREE from "three";
 import { loadSurfaceData, TERMS } from "../../lib/brain";
 import { REGIONS } from "../../lib/regions";
@@ -142,12 +143,9 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
   const wrap = useRef(null);
   const canvasRef = useRef(null);
   const [ready, setReady] = useState(false);
-  const termCb = useRef(onTerm);
-  termCb.current = onTerm;
-  const regionCb = useRef(onRegion);
-  regionCb.current = onRegion;
-  const focusRef = useRef(focus);
-  focusRef.current = focus;
+  const termCb = useLatest(onTerm);
+  const regionCb = useLatest(onRegion);
+  const focusRef = useLatest(focus);
   const kick = useRef(() => {});
   const list = terms.join(",");
 
@@ -439,7 +437,7 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
       target.dispose();
       renderer.dispose();
     };
-  }, [cell, list, interactive, zoom]);
+  }, [cell, list, interactive, zoom, termCb, regionCb, focusRef]);
 
   return (
     <div ref={wrap} className={`pixel-brain ${ready ? "ready" : ""} ${className}`} data-cursor={interactive ? "inspect" : undefined}>

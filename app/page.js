@@ -1,3 +1,4 @@
+import Link from "next/link";
 import "./landing/landing.css";
 import Hero from "../components/landing/Hero";
 import FlowDemo from "../components/landing/FlowDemo";
@@ -71,14 +72,14 @@ export default function Landing() {
     <div className="lp">
       <Cursor />
       <nav className="nav lp-nav">
-        <a className="brand" href="/">
+        <Link className="brand" href="/">
           <span className="mark" aria-hidden="true">
             {[0, 1, 0, 1, 1, 1, 0, 1, 0].map((on, i) => (
               <i key={i} className={on ? "on" : ""} />
             ))}
           </span>
           Neuro UI Analyzer
-        </a>
+        </Link>
         <div className="lp-nav-links">
           <a href="#how">How it works</a>
           <a href="#method">Method</a>
@@ -227,14 +228,14 @@ export default function Landing() {
           <Waitlist />
         </div>
         <div className="lp-foot-bar">
-          <a className="brand" href="/">
+          <Link className="brand" href="/">
             <span className="mark" aria-hidden="true">
               {[0, 1, 0, 1, 1, 1, 0, 1, 0].map((on, i) => (
                 <i key={i} className={on ? "on" : ""} />
               ))}
             </span>
             Neuro UI Analyzer
-          </a>
+          </Link>
           <nav aria-label="Footer">
             <a href="/app">Try the beta</a>
             <a href="/brain">Brain demo</a>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { clearHistory, deleteAnalysis, listAnalyses } from "../../lib/history";
 
@@ -89,14 +90,14 @@ export default function History() {
   return (
     <>
       <nav className="nav">
-        <a className="brand" href="/">
+        <Link className="brand" href="/">
           <span className="mark" aria-hidden="true">
             {[0, 1, 0, 1, 1, 1, 0, 1, 0].map((on, i) => (
               <i key={i} className={on ? "on" : ""} />
             ))}
           </span>
           Neuro UI Analyzer
-        </a>
+        </Link>
         <div className="nav-links">
           <span className="chip">Stored in this browser only</span>
           <a className="chip" href="/app">
@@ -199,7 +200,7 @@ export default function History() {
         )}
 
         <footer className="foot">
-          History uses your browser's local storage (IndexedDB). Clearing site data in your browser removes it too.
+          History uses your browser&apos;s local storage (IndexedDB). Clearing site data in your browser removes it too.
         </footer>
       </main>
     </>

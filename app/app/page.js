@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useBrowserValue } from "../../lib/hooks";
 import { analyzeFile } from "../../lib/heuristics";
 import { computeWeights } from "../../lib/brain";
 import BrainViewer from "../../components/BrainViewer";
@@ -48,7 +50,6 @@ export default function Analyzer() {
   const [features, setFeatures] = useState(null);
   const [heat, setHeat] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
-  const [opening, setOpening] = useState(false);
   const [historyCount, setHistoryCount] = useState(0);
   useEffect(() => {
     const count = () => listAnalyses().then((l) => setHistoryCount(l.length));
@@ -57,13 +58,12 @@ export default function Analyzer() {
     return () => window.removeEventListener("nua:history", count);
   }, []);
   // /app?id=... reopens a saved analysis instantly, without running anything again.
-  // Layout effect so the upload screen never flashes before the saved report appears.
-  useLayoutEffect(() => {
+  // While it loads, the upload screen stays hidden so it doesn't flash before the report.
+  const urlId = useBrowserValue(() => new URLSearchParams(window.location.search).get("id"), null);
+  useEffect(() => {
     const id = new URLSearchParams(window.location.search).get("id");
     if (!id) return;
-    setOpening(true);
     getAnalysis(id).then((record) => {
-      setOpening(false);
       if (!record) {
         setUrlId(null);
         setError("That analysis is no longer in this browser's history. Upload the design again.");
@@ -276,14 +276,14 @@ export default function Analyzer() {
   return (
     <>
       <nav className="nav">
-        <a className="brand" href="/">
+        <Link className="brand" href="/">
           <span className="mark" aria-hidden="true">
             {[0, 1, 0, 1, 1, 1, 0, 1, 0].map((on, i) => (
               <i key={i} className={on ? "on" : ""} />
             ))}
           </span>
           Neuro UI Analyzer
-        </a>
+        </Link>
         {showResults && (
           <ol className="steps" aria-label="Sections of this analysis">
             {SECTIONS.map(([id, name], i) => (
@@ -319,7 +319,7 @@ export default function Analyzer() {
       </nav>
 
       <input ref={input} type="file" accept="image/*" hidden onChange={(e) => handle(e.target.files[0])} />
-      {!showResults && !opening && <UploadHero onFile={handle} onBrowse={() => input.current.click()} error={error} />}
+      {!showResults && !(urlId && !error) && <UploadHero onFile={handle} onBrowse={() => input.current.click()} error={error} />}
 
       <main className={showResults ? "" : "after-upload"}>
 
@@ -516,7 +516,7 @@ export default function Analyzer() {
                         faces, objects, scenes, reward, decision making), then writes a summary with suggested changes.
                       </p>
                       <p className="hint">
-                        Sends a downscaled copy of the image to Google's Gemini API (free tier). Don't use it on
+                        Sends a downscaled copy of the image to Google&apos;s Gemini API (free tier). Don&apos;t use it on
                         confidential designs: free tier requests may be used to improve Google products.
                       </p>
                     </div>
@@ -559,8 +559,8 @@ export default function Analyzer() {
                 The maps come from NeuroQuery (Dockes et al., 2020, eLife), built from about 13,000 published
                 studies. The 3D brain is the ICBM152 cortical surface (the right hemisphere shape is a mirror of
                 the left, the data on it is real right-hemisphere data). Deep structures such as the striatum only
-                show in the MRI slices. Each card shows that function's own map from the side, and the engagement
-                value is this tool's model of how strongly your design engages it, not a measurement.
+                show in the MRI slices. Each card shows that function&apos;s own map from the side, and the engagement
+                value is this tool&apos;s model of how strongly your design engages it, not a measurement.
               </p>
             </section>
           </>

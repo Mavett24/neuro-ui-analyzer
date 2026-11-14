@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLatest } from "../lib/hooks";
 import { blendPoints, blendSurface, loadBrainData, loadSurfaceData, vertexContributions } from "../lib/brain";
 import { REGIONS } from "../lib/regions";
 
@@ -105,8 +106,7 @@ export default function BrainSurface({ weights }) {
   const [tip, setTip] = useState(null);
   const [slice, setSlice] = useState(0); // 0 = whole brain, 100 = all quiet cortex cut away
   const sliceRef = useRef(setSlice);
-  const weightsRef = useRef(weights);
-  weightsRef.current = weights;
+  const weightsRef = useLatest(weights);
   const [status, setStatus] = useState("Loading brain surface...");
   const [range, setRange] = useState(null);
 
@@ -322,7 +322,7 @@ export default function BrainSurface({ weights }) {
       scene.current = null;
       cleanup();
     };
-  }, []);
+  }, [weightsRef]);
 
   // Update the activation whenever the weights change.
   useEffect(() => {

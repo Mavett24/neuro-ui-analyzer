@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useBrowserValue } from "../lib/hooks";
 import ShaderBg from "./landing/ShaderBg";
 import PixelField from "./PixelField";
 
@@ -29,11 +30,10 @@ const STEPS = [
 
 export default function UploadHero({ onFile, onBrowse, error }) {
   const [drag, setDrag] = useState(false);
-  const [mac, setMac] = useState(false);
+  const mac = useBrowserValue(() => /Mac|iPhone|iPad/.test(navigator.platform), false);
   const [loadingSample, setLoadingSample] = useState(false);
 
   useEffect(() => {
-    setMac(/Mac|iPhone|iPad/.test(navigator.platform));
     // Paste a screenshot straight from the clipboard.
     const onPaste = (e) => {
       const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith("image/"));

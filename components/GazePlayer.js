@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { prefersReducedMotion, useLatest } from "../lib/hooks";
 import { drawHeatmap } from "../lib/saliency";
 import { revealMask, traceAt, TRACE_ROWS, TYPE_LABEL } from "../lib/scanpath";
 
@@ -18,27 +19,31 @@ const ramp = (t) => {
 const secs = (ms) => (ms / 1000).toFixed(2) + "s";
 
 export default function GazePlayer({ preview, saliency, path, heat, cta }) {
-  const [t, setT] = useState(0);
+  const end = WINDOW;
+  // Only ever rendered in the browser (it needs an analysis), so reading the media query here is safe.
+  // With reduced motion the playback starts at its final frame instead of playing.
+  const [t, setT] = useState(() => (prefersReducedMotion() ? end : 0));
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(0.5);
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(prefersReducedMotion);
   const stage = useRef(null);
   const canvas = useRef(null);
   const mask = useRef(null);
-  const speedRef = useRef(speed);
-  speedRef.current = speed;
-  const end = WINDOW;
+  const speedRef = useLatest(speed);
 
-  // Reset and wait for the viewport whenever a new design comes in.
-  useEffect(() => {
+  // A new design resets the playback. Adjusting state during render avoids a flash of the old one.
+  const [shownPath, setShownPath] = useState(path);
+  if (path !== shownPath) {
+    const reduce = prefersReducedMotion();
+    setShownPath(path);
     setPlaying(false);
-    setStarted(false);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setT(end);
-      setStarted(true);
-      return;
-    }
-    setT(0);
+    setStarted(reduce);
+    setT(reduce ? end : 0);
+  }
+
+  // Wait for the viewport, then play once.
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
     const seen = new IntersectionObserver(
       (e) => {
         if (!e[0].isIntersecting) return;
@@ -50,12 +55,14 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
     );
     seen.observe(stage.current);
     return () => seen.disconnect();
-  }, [path, end]);
+  }, [path]);
 
   // Clock. Each frame advances by at most 50ms of real time, so a frame stalled by the page
   // (the brain viewer loading, for example) slows playback down instead of skipping ahead.
-  const clock = useRef(0);
-  clock.current = t;
+  const clock = useRef(t);
+  useLayoutEffect(() => {
+    clock.current = t;
+  }, [t]);
   useEffect(() => {
     if (!playing) return;
     let frame, last = performance.now();
@@ -70,7 +77,7 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [playing, end]);
+  }, [playing, end, speedRef]);
 
   // Gaze map: only where the eyes have been, complete at the end.
   useEffect(() => {
