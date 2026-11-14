@@ -13,15 +13,18 @@ export default function PixelDivider({ from, to, cell = 8, height = 64 }) {
 
   useEffect(() => {
     const canvas = ref.current;
-    const a = hex(from), b = hex(to);
+    const a = hex(from),
+      b = hex(to);
     let progress = 0;
     let cancel = () => {};
     // Columns get a fixed random offset so the edge reads as eroded, not as a straight ramp.
     let jitter = [];
     const draw = () => {
       const { ctx, w, h } = fit(canvas);
-      const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
-      if (jitter.length !== cols) jitter = Array.from({ length: cols }, (_, i) => ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 1);
+      const cols = Math.ceil(w / cell),
+        rows = Math.ceil(h / cell);
+      if (jitter.length !== cols)
+        jitter = Array.from({ length: cols }, (_, i) => (((Math.sin(i * 12.9898) * 43758.5453) % 1) + 1) % 1);
       ctx.fillStyle = `rgb(${a})`;
       ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = `rgb(${b})`;

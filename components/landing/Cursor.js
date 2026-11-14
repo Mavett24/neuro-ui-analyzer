@@ -18,7 +18,10 @@ export default function Cursor() {
     const root = document.documentElement;
     root.classList.add("has-cursor");
 
-    let x = -100, y = -100, rx = -100, ry = -100;
+    let x = -100,
+      y = -100,
+      rx = -100,
+      ry = -100;
     let frame = 0;
     let mode = "";
     const set = (m, text = "") => {
@@ -39,7 +42,7 @@ export default function Cursor() {
     const onMove = (e) => {
       x = e.clientX;
       y = e.clientY;
-      if (rx < -50) (rx = x), (ry = y);
+      if (rx < -50) ((rx = x), (ry = y));
       dot.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       ring.current.style.opacity = dot.current.style.opacity = "1";
       if (!frame) frame = requestAnimationFrame(step);

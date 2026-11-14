@@ -13,7 +13,10 @@ export default function PixelField({ mode = "ambient", cell = 8, className = "" 
     const canvas = ref.current;
     const ctx = canvas.getContext("2d");
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let frame, last = 0, cols = 0, rows = 0;
+    let frame,
+      last = 0,
+      cols = 0,
+      rows = 0;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);

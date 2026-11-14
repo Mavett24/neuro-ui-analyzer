@@ -88,7 +88,9 @@ export default function ShaderBg({ className = "", focus = [0.74, 0.55] }) {
     gl.uniform2f(gl.getUniformLocation(prog, "uFocus"), fx, fy);
 
     const RES = 0.5;
-    let frame = 0, last = 0, visible = true;
+    let frame = 0,
+      last = 0,
+      visible = true;
     const t0 = performance.now() - 40000; // start mid-flow, not from a blank field
     const draw = (now) => {
       gl.uniform1f(uTime, (now - t0) / 1000);

@@ -223,7 +223,8 @@ export default function BrainSurface({ weights }) {
         controls.addEventListener("start", () => (controls.autoRotate = false));
 
         const resize = () => {
-          const w = el.clientWidth, h = el.clientHeight;
+          const w = el.clientWidth,
+            h = el.clientHeight;
           renderer.setSize(w, h, false);
           camera.aspect = w / h;
           camera.updateProjectionMatrix();
@@ -250,7 +251,10 @@ export default function BrainSurface({ weights }) {
           pending = null;
           pointer.set((m.x / m.w) * 2 - 1, -(m.y / m.h) * 2 + 1);
           raycaster.setFromCamera(pointer, camera);
-          const hits = raycaster.intersectObjects([left, right].filter((o) => o.visible), false);
+          const hits = raycaster.intersectObjects(
+            [left, right].filter((o) => o.visible),
+            false
+          );
           const lo = uniforms.uLo.value;
           // In glass mode the first highlighted surface along the ray counts, not just the nearest one.
           const hit = hits.find((h) => h.object.geometry.attributes.aAct.array[h.face.a] > lo);
@@ -258,7 +262,9 @@ export default function BrainSurface({ weights }) {
           const side = hit.object === left ? 0 : 1;
           const v = hit.face.a;
           const region = REGIONS[data.labels[side * data.nv + v]];
-          const drivers = vertexContributions(data, weightsRef.current, side, v).slice(0, 2).map((c) => c.label);
+          const drivers = vertexContributions(data, weightsRef.current, side, v)
+            .slice(0, 2)
+            .map((c) => c.label);
           setTip({
             x: Math.min(m.x + 16, m.w - 290),
             y: Math.min(m.y + 16, m.h - 170),
@@ -282,7 +288,8 @@ export default function BrainSurface({ weights }) {
         controls.addEventListener("start", () => setTip(null));
 
         // Only render while the viewer is on screen, so it does not compete with the rest of the page.
-        let frame, onScreen = true;
+        let frame,
+          onScreen = true;
         const visibility = new IntersectionObserver((e) => (onScreen = e[0].isIntersecting));
         visibility.observe(el);
         const loop = () => {
@@ -424,7 +431,9 @@ export default function BrainSurface({ weights }) {
               <em>weighted z</em>
             </div>
           )}
-          <p className="drag-hint">Drag to rotate. Scroll to zoom. Ctrl + scroll to slice. Hover a highlighted area for details.</p>
+          <p className="drag-hint">
+            Drag to rotate. Scroll to zoom. Ctrl + scroll to slice. Hover a highlighted area for details.
+          </p>
         </>
       )}
     </div>

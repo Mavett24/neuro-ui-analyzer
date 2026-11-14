@@ -1,12 +1,9 @@
 // Content detection: the vision model reports what is in the design as plain numbers.
 // It does not decide anything about the brain. lib/brain.js maps these numbers to the maps.
 
-const MODELS = [
-  process.env.GEMINI_MODEL,
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
-  "gemini-2.5-flash",
-].filter(Boolean);
+const MODELS = [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash"].filter(
+  Boolean
+);
 
 const PROMPT = `Look at this UI screenshot and report what it contains. Return only JSON with exactly these keys:
 {
@@ -39,15 +36,12 @@ export async function POST(req) {
   let last = "No model responded.";
   for (const model of MODELS) {
     try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-          body: JSON.stringify(payload),
-          signal: AbortSignal.timeout(12_000),
-        }
-      );
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(12_000),
+      });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         last = json.error?.message || res.statusText;

@@ -87,12 +87,11 @@ export default function Analyzer() {
   useEffect(() => {
     const src = new URLSearchParams(window.location.search).get("src");
     if (src && src.startsWith("/") && !src.startsWith("//"))
-      fetch(src).then((r) => r.blob()).then((b) => handle(new File([b], "sample", { type: b.type })));
+      fetch(src)
+        .then((r) => r.blob())
+        .then((b) => handle(new File([b], "sample", { type: b.type })));
   }, []);
-  const weights = useMemo(
-    () => (result ? computeWeights(result.metrics, features) : null),
-    [result, features]
-  );
+  const weights = useMemo(() => (result ? computeWeights(result.metrics, features) : null), [result, features]);
   // The four pixel-based functions always show. The six content-based ones join after the deep analysis.
   const baseWeights = useMemo(() => (weights || []).filter((w) => !w.pending && !DEEP_KEYS.includes(w.key)), [weights]);
   const deepWeights = useMemo(() => (weights || []).filter((w) => DEEP_KEYS.includes(w.key)), [weights]);
@@ -118,7 +117,9 @@ export default function Analyzer() {
         if (r.top <= anchor) active = i;
         return atEnd ? 1 : Math.round(Math.max(0, Math.min(1, (anchor - r.top) / r.height)) * 100) / 100;
       });
-      setSpy((prev) => (prev.active === active && prev.parts.every((v, i) => v === parts[i]) ? prev : { active, parts }));
+      setSpy((prev) =>
+        prev.active === active && prev.parts.every((v, i) => v === parts[i]) ? prev : { active, parts }
+      );
     };
     const queue = () => {
       if (!frame) frame = requestAnimationFrame(measure);
@@ -319,10 +320,11 @@ export default function Analyzer() {
       </nav>
 
       <input ref={input} type="file" accept="image/*" hidden onChange={(e) => handle(e.target.files[0])} />
-      {!showResults && !(urlId && !error) && <UploadHero onFile={handle} onBrowse={() => input.current.click()} error={error} />}
+      {!showResults && !(urlId && !error) && (
+        <UploadHero onFile={handle} onBrowse={() => input.current.click()} error={error} />
+      )}
 
       <main className={showResults ? "" : "after-upload"}>
-
         {showResults && (
           <header className="compact">
             <div>
@@ -366,8 +368,8 @@ export default function Analyzer() {
                           {!cta
                             ? "No CTA found"
                             : result.scanpath.ctaHit
-                            ? `CTA seen at ${(result.scanpath.ctaHit.start / 1000).toFixed(1)}s`
-                            : "CTA not seen in 3s"}
+                              ? `CTA seen at ${(result.scanpath.ctaHit.start / 1000).toFixed(1)}s`
+                              : "CTA not seen in 3s"}
                         </span>
                       </>
                     ) : (
@@ -382,7 +384,13 @@ export default function Analyzer() {
                   </button>
                 </div>
                 {result ? (
-                  <GazePlayer preview={preview} saliency={result.saliency} path={result.scanpath} heat={heat} cta={cta} />
+                  <GazePlayer
+                    preview={preview}
+                    saliency={result.saliency}
+                    path={result.scanpath}
+                    heat={heat}
+                    cta={cta}
+                  />
                 ) : (
                   <div className="attn-stage">
                     <div className="shot loading">
@@ -414,7 +422,9 @@ export default function Analyzer() {
                   {unisal
                     ? "Predicted by UNISAL, a model trained on human eye-tracking data (natural images and video, not UIs). It cannot see motion, so animated elements are likely underrated."
                     : "Contrast-based fallback, because the gaze model could not load. It is not trained on eye-tracking data."}
-                  {" The numbered path is a predicted order of fixations derived from that map (winner-take-all with inhibition of return, Itti, Koch & Niebur, 1998), not a recording."}
+                  {
+                    " The numbered path is a predicted order of fixations derived from that map (winner-take-all with inhibition of return, Itti, Koch & Niebur, 1998), not a recording."
+                  }
                   {cta
                     ? " The outline marks the detected primary button, with the detection confidence."
                     : " No filled button was detected with enough confidence, so none is outlined."}
@@ -425,7 +435,9 @@ export default function Analyzer() {
             <section className="section" id="layout">
               <p className="eyebrow">02 Layout</p>
               <h2>Layout diagnostics</h2>
-              <p className="sub">Measured from the pixels of your design. Each card shows the data behind the number.</p>
+              <p className="sub">
+                Measured from the pixels of your design. Each card shows the data behind the number.
+              </p>
               <div className="diag-grid">
                 {!result &&
                   Array.from({ length: 6 }, (_, i) => (
@@ -442,24 +454,32 @@ export default function Analyzer() {
                   const card = f.label.startsWith("White")
                     ? { big: `${m.whitespacePct}%`, unit: "empty", viz: <WhitespaceViz grid={v.whitespace} /> }
                     : f.label.startsWith("Visual clutter")
-                    ? { big: m.clutterScore, unit: "of 100, higher is busier", viz: <ClutterViz grid={v.edges} /> }
-                    : f.label.startsWith("Colour")
-                    ? {
-                        big: m.hueFamilies,
-                        unit: `hue famil${m.hueFamilies === 1 ? "y" : "ies"}, plus ${m.neutralColours} neutral${m.neutralColours === 1 ? "" : "s"}`,
-                        viz: <ColourViz colours={m.dominantColours} />,
-                      }
-                    : f.label.startsWith("Left")
-                    ? { big: m.balance.leftRight.toFixed(2), unit: "balance, 1 = even", viz: <BalanceViz columns={v.columns} leftShare={v.leftShare} /> }
-                    : f.label.startsWith("Primary CTA")
-                    ? {
-                        big: cta ? `${cta.contrastVsBackground}:1` : "none",
-                        unit: cta ? `contrast, ${cta.zone}` : "",
-                        viz: <ContrastViz cta={cta} background={cta?.surroundColour || m.backgroundColour} />,
-                      }
-                    : f.label.startsWith("Attention on CTA")
-                    ? { big: `${m.attention.ctaAttentionPctOfPeak}%`, unit: "of peak attention", viz: <AttentionViz saliency={result.saliency} box={cta?.box} /> }
-                    : { big: f.value, unit: "", viz: null };
+                      ? { big: m.clutterScore, unit: "of 100, higher is busier", viz: <ClutterViz grid={v.edges} /> }
+                      : f.label.startsWith("Colour")
+                        ? {
+                            big: m.hueFamilies,
+                            unit: `hue famil${m.hueFamilies === 1 ? "y" : "ies"}, plus ${m.neutralColours} neutral${m.neutralColours === 1 ? "" : "s"}`,
+                            viz: <ColourViz colours={m.dominantColours} />,
+                          }
+                        : f.label.startsWith("Left")
+                          ? {
+                              big: m.balance.leftRight.toFixed(2),
+                              unit: "balance, 1 = even",
+                              viz: <BalanceViz columns={v.columns} leftShare={v.leftShare} />,
+                            }
+                          : f.label.startsWith("Primary CTA")
+                            ? {
+                                big: cta ? `${cta.contrastVsBackground}:1` : "none",
+                                unit: cta ? `contrast, ${cta.zone}` : "",
+                                viz: <ContrastViz cta={cta} background={cta?.surroundColour || m.backgroundColour} />,
+                              }
+                            : f.label.startsWith("Attention on CTA")
+                              ? {
+                                  big: `${m.attention.ctaAttentionPctOfPeak}%`,
+                                  unit: "of peak attention",
+                                  viz: <AttentionViz saliency={result.saliency} box={cta?.box} />,
+                                }
+                              : { big: f.value, unit: "", viz: null };
                   return (
                     <article key={f.label} className="diag">
                       <div className="diag-head">
@@ -499,77 +519,78 @@ export default function Analyzer() {
                 </div>
               ) : (
                 <>
-                <BrainViewer weights={weights} />
+                  <BrainViewer weights={weights} />
 
-                <div className="brain-sub">
-                  <h3>Measured from pixels</h3>
-                  <span className="chip">{baseWeights.length} functions</span>
-                </div>
-                <BrainCards items={baseWeights} />
-
-                {!deepStarted ? (
-                  <div className="deep-cta">
-                    <div>
-                      <h3>Deep research analysis</h3>
-                      <p>
-                        Reads what is in the design to add six content-based functions to the brain above (reading,
-                        faces, objects, scenes, reward, decision making), then writes a summary with suggested changes.
-                      </p>
-                      <p className="hint">
-                        Sends a downscaled copy of the image to Google&apos;s Gemini API (free tier). Don&apos;t use it on
-                        confidential designs: free tier requests may be used to improve Google products.
-                      </p>
-                    </div>
-                    <button className="pill" onClick={() => getReview()}>
-                      Generate deep research analysis
-                    </button>
+                  <div className="brain-sub">
+                    <h3>Measured from pixels</h3>
+                    <span className="chip">{baseWeights.length} functions</span>
                   </div>
-                ) : (
-                  <>
-                    <div className="brain-sub">
-                      <h3>Deep research analysis</h3>
-                      <div className="attn-meta">
-                        {features && <span className="chip">{deepWeights.length} functions added</span>}
-                        <button className="ghost" onClick={() => getReview(true)} disabled={busy}>
-                          {busy ? "Analyzing..." : "Regenerate"}
-                        </button>
+                  <BrainCards items={baseWeights} />
+
+                  {!deepStarted ? (
+                    <div className="deep-cta">
+                      <div>
+                        <h3>Deep research analysis</h3>
+                        <p>
+                          Reads what is in the design to add six content-based functions to the brain above (reading,
+                          faces, objects, scenes, reward, decision making), then writes a summary with suggested
+                          changes.
+                        </p>
+                        <p className="hint">
+                          Sends a downscaled copy of the image to Google&apos;s Gemini API (free tier). Don&apos;t use
+                          it on confidential designs: free tier requests may be used to improve Google products.
+                        </p>
                       </div>
+                      <button className="pill" onClick={() => getReview()}>
+                        Generate deep research analysis
+                      </button>
                     </div>
-                    {features ? (
-                      <BrainCards items={deepWeights} deep />
-                    ) : featuresFailed ? (
-                      <p className="error wide">
-                        Content detection did not return, so the six content-based functions are missing. Regenerate to
-                        try again.
-                      </p>
-                    ) : (
-                      <div className="loading" aria-live="polite">
-                        <PixelField mode="busy" cell={6} />
-                        <p className="hint">Detecting text, faces, imagery and actions... {elapsed}s</p>
+                  ) : (
+                    <>
+                      <div className="brain-sub">
+                        <h3>Deep research analysis</h3>
+                        <div className="attn-meta">
+                          {features && <span className="chip">{deepWeights.length} functions added</span>}
+                          <button className="ghost" onClick={() => getReview(true)} disabled={busy}>
+                            {busy ? "Analyzing..." : "Regenerate"}
+                          </button>
+                        </div>
                       </div>
-                    )}
-                    {error && <p className="error wide">{error}</p>}
-                    {(review || busy) && <ReviewCard review={review} busy={busy} elapsed={elapsed} />}
-                  </>
-                )}
+                      {features ? (
+                        <BrainCards items={deepWeights} deep />
+                      ) : featuresFailed ? (
+                        <p className="error wide">
+                          Content detection did not return, so the six content-based functions are missing. Regenerate
+                          to try again.
+                        </p>
+                      ) : (
+                        <div className="loading" aria-live="polite">
+                          <PixelField mode="busy" cell={6} />
+                          <p className="hint">Detecting text, faces, imagery and actions... {elapsed}s</p>
+                        </div>
+                      )}
+                      {error && <p className="error wide">{error}</p>}
+                      {(review || busy) && <ReviewCard review={review} busy={busy} elapsed={elapsed} />}
+                    </>
+                  )}
                 </>
               )}
 
               <p className="hint">
-                The maps come from NeuroQuery (Dockes et al., 2020, eLife), built from about 13,000 published
-                studies. The 3D brain is the ICBM152 cortical surface (the right hemisphere shape is a mirror of
-                the left, the data on it is real right-hemisphere data). Deep structures such as the striatum only
-                show in the MRI slices. Each card shows that function&apos;s own map from the side, and the engagement
-                value is this tool&apos;s model of how strongly your design engages it, not a measurement.
+                The maps come from NeuroQuery (Dockes et al., 2020, eLife), built from about 13,000 published studies.
+                The 3D brain is the ICBM152 cortical surface (the right hemisphere shape is a mirror of the left, the
+                data on it is real right-hemisphere data). Deep structures such as the striatum only show in the MRI
+                slices. Each card shows that function&apos;s own map from the side, and the engagement value is this
+                tool&apos;s model of how strongly your design engages it, not a measurement.
               </p>
             </section>
           </>
         )}
 
         <footer className="foot">
-          Estimates for design exploration, not measurements of real users. Gaze model: UNISAL (Droste et al.,
-          2020, Apache 2.0). Brain maps: NeuroQuery (Dockes et al., 2020). Region names: AAL atlas
-          (Tzourio-Mazoyer et al., 2002).
+          Estimates for design exploration, not measurements of real users. Gaze model: UNISAL (Droste et al., 2020,
+          Apache 2.0). Brain maps: NeuroQuery (Dockes et al., 2020). Region names: AAL atlas (Tzourio-Mazoyer et al.,
+          2002).
         </footer>
       </main>
     </>

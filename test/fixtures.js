@@ -54,7 +54,8 @@ export function saliency(w, h, blobs) {
     for (let x = 0; x < w; x++) {
       let v = 0;
       for (const [bx, by, s] of blobs) {
-        const dx = x / w - bx, dy = y / h - by;
+        const dx = x / w - bx,
+          dy = y / h - by;
         v += s * Math.exp(-(dx * dx + dy * dy) / (2 * 0.04 * 0.04));
       }
       map[y * w + x] = v;

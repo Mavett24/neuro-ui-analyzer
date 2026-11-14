@@ -8,7 +8,8 @@ import { useSample } from "./useSample";
 // in lime and the predicted fixations on top. Builds in once, top to bottom, then holds still.
 // Hovering opens a sharp fovea over the real screenshot, the same idea as the gaze model.
 
-const COLS = 120, ROWS = 60;
+const COLS = 120,
+  ROWS = 60;
 
 export default function PixelGaze() {
   const sample = useSample();
@@ -24,13 +25,16 @@ export default function PixelGaze() {
     let cancel = () => {};
     const s = sample.saliency;
     const salAt = (x, y) => {
-      const sx = Math.floor(((x + 0.5) / COLS) * s.w), sy = Math.floor(((y + 0.5) / ROWS) * s.h);
+      const sx = Math.floor(((x + 0.5) / COLS) * s.w),
+        sy = Math.floor(((y + 0.5) / ROWS) * s.h);
       return s.map[sy * s.w + sx];
     };
     const draw = () => {
       if (!grid) return;
       const { ctx, w, h } = fit(canvas.current);
-      const cw = w / COLS, ch = h / ROWS, g = Math.max(1, cw * 0.14);
+      const cw = w / COLS,
+        ch = h / ROWS,
+        g = Math.max(1, cw * 0.14);
       ctx.clearRect(0, 0, w, h);
       const shownRows = Math.ceil(p.rows * ROWS);
       for (let y = 0; y < shownRows; y++)
@@ -86,7 +90,8 @@ export default function PixelGaze() {
   // Fovea lens: written straight to the element, no re-render per move.
   const move = (e) => {
     const r = stage.current.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const x = e.clientX - r.left,
+      y = e.clientY - r.top;
     const m = `radial-gradient(circle at ${x}px ${y}px, #000 52px, transparent 74px)`;
     sharp.current.style.webkitMaskImage = m;
     sharp.current.style.maskImage = m;
@@ -103,24 +108,34 @@ export default function PixelGaze() {
         <i />
         <span>attention.map</span>
       </div>
-      <div
-        className={`px-stage ${phase === 2 ? "done" : ""}`}
-        ref={stage}
-        onPointerMove={move}
-        data-cursor="inspect"
-      >
+      <div className={`px-stage ${phase === 2 ? "done" : ""}`} ref={stage} onPointerMove={move} data-cursor="inspect">
         <canvas ref={canvas} className="px-canvas" />
-        <img ref={sharp} className="px-sharp" src="/demo/sample.jpg" alt="Sample landing page with its predicted attention" />
+        <img
+          ref={sharp}
+          className="px-sharp"
+          src="/demo/sample.jpg"
+          alt="Sample landing page with its predicted attention"
+        />
         <i className="px-lens" aria-hidden="true" />
         {fx.map((f, i) => (
-          <span key={i} className={`px-fx ${f.type === "cta" ? "hit" : ""}`} style={{ left: `${f.x * 100}%`, top: `${f.y * 100}%`, "--d": `${i * 90}ms` }}>
+          <span
+            key={i}
+            className={`px-fx ${f.type === "cta" ? "hit" : ""}`}
+            style={{ left: `${f.x * 100}%`, top: `${f.y * 100}%`, "--d": `${i * 90}ms` }}
+          >
             {i + 1}
           </span>
         ))}
       </div>
       <div className="v-foot">
-        <span className="px-key"><i className="lime" />predicted gaze</span>
-        <span className="px-key"><i className="num" />fixation order</span>
+        <span className="px-key">
+          <i className="lime" />
+          predicted gaze
+        </span>
+        <span className="px-key">
+          <i className="num" />
+          fixation order
+        </span>
         <span>hover for the fovea</span>
       </div>
     </div>

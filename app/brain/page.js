@@ -27,7 +27,9 @@ export default function BrainDemo() {
           <p className="eyebrow">Demo, sample weights</p>
           <h1>Brain viewer</h1>
         </div>
-        <a className="chip" href="/app">Back to the analyzer</a>
+        <a className="chip" href="/app">
+          Back to the analyzer
+        </a>
       </header>
       <BrainViewer weights={weights} initialView={view} />
     </main>

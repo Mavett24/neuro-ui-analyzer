@@ -92,7 +92,11 @@ export function ColourViz({ colours }) {
     <div className="viz-stack">
       <div className="strip">
         {colours.map((c) => (
-          <span key={c.hex} style={{ flex: Math.max(c.sharePct, 1.5), background: c.hex }} title={`${c.hex} ${c.sharePct}%`} />
+          <span
+            key={c.hex}
+            style={{ flex: Math.max(c.sharePct, 1.5), background: c.hex }}
+            title={`${c.hex} ${c.sharePct}%`}
+          />
         ))}
       </div>
       <ul className="legend">
@@ -138,8 +142,12 @@ export function ContrastViz({ cta, background }) {
           </g>
         ))}
         <path d={`M ${X(v)} 18 l -6 -9 h 12 z`} fill={LIME} />
-        <text x="12" y="10" textAnchor="start">1:1</text>
-        <text x="288" y="10" textAnchor="end">8:1</text>
+        <text x="12" y="10" textAnchor="start">
+          1:1
+        </text>
+        <text x="288" y="10" textAnchor="end">
+          8:1
+        </text>
       </svg>
     </div>
   );
@@ -175,7 +183,12 @@ export function AttentionViz({ saliency, box }) {
         if (!box) return;
         ctx.strokeStyle = PHOS;
         ctx.lineWidth = 2;
-        ctx.strokeRect(box.x * cols * s, box.y * rows * s, Math.max(4, box.w * cols * s), Math.max(4, box.h * rows * s));
+        ctx.strokeRect(
+          box.x * cols * s,
+          box.y * rows * s,
+          Math.max(4, box.w * cols * s),
+          Math.max(4, box.h * rows * s)
+        );
       }}
     />
   );

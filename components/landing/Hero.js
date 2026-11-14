@@ -9,7 +9,10 @@ const level = (a) => (a > 0.55 ? "strong" : a > 0.15 ? "moderate" : "low");
 export default function Hero() {
   const [term, setTerm] = useState(BRAIN_CYCLE[0].key);
   const [region, setRegion] = useState(null);
-  const i = Math.max(0, BRAIN_CYCLE.findIndex((t) => t.key === term));
+  const i = Math.max(
+    0,
+    BRAIN_CYCLE.findIndex((t) => t.key === term)
+  );
   const t = BRAIN_CYCLE[i];
 
   return (

@@ -89,7 +89,9 @@ export default function UploadHero({ onFile, onBrowse, error }) {
         <button type="button" className="up-drop" onClick={onBrowse} aria-describedby="up-formats">
           {drag && <PixelField mode="busy" cell={8} className="up-scan" />}
           <span className="up-glyph" aria-hidden="true">
-            {GLYPH.flatMap((row, y) => row.split("").map((c, x) => <i key={`${x}${y}`} className={c === "#" ? "on" : ""} />))}
+            {GLYPH.flatMap((row, y) =>
+              row.split("").map((c, x) => <i key={`${x}${y}`} className={c === "#" ? "on" : ""} />)
+            )}
           </span>
           <span className="up-title">
             {drag ? (
@@ -139,7 +141,9 @@ export default function UploadHero({ onFile, onBrowse, error }) {
             <em>on request</em>
           </li>
         </ol>
-        <p className="up-note">Gaze, layout and brain run in your browser. Nothing leaves your device unless you ask for deep research.</p>
+        <p className="up-note">
+          Gaze, layout and brain run in your browser. Nothing leaves your device unless you ask for deep research.
+        </p>
       </div>
     </section>
   );
