@@ -1,0 +1,23 @@
+# Dependencies and build output
+node_modules
+.next
+out
+.vercel
+
+# Copied from onnxruntime-web on install (scripts/copy-ort.mjs)
+public/ort
+
+# Secrets: only .env.example is committed
+.env*
+!.env.example
+
+# Media and working files kept out of the repo
+*.mp4
+*.mov
+DESIGN.md
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
