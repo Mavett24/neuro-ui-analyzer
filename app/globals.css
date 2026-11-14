@@ -635,3 +635,88 @@ button.ghost.danger, button.ghost.danger:hover { color: var(--ground); backgroun
 .hist-empty p { margin: 0 0 12px; max-width: 420px; font-size: 14px; color: var(--sage-40); }
 .hist-empty .pill { display: inline-flex; text-decoration: none; }
 @media (max-width: 700px) { .hist .compact { flex-direction: column; align-items: flex-start; } }
+
+/* Phones: the section switcher becomes a bottom tab bar, inside thumb reach. */
+.tabbar { display: none; }
+.tab-icon { display: grid; grid-template-columns: repeat(5, 3px); gap: 1px; }
+.tab-icon i { width: 3px; height: 3px; background: var(--pine); transition: background-color var(--ease); }
+.tab-icon i.on { background: var(--sage-60); }
+@media (max-width: 700px) {
+  .nav { height: 56px; padding: 0 16px; }
+  .nav .steps, .nav .pct { display: none; }
+  .nav-links a.chip { display: inline-flex; }
+  .section { scroll-margin-top: 72px; }
+  main:has(.section) { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+  .tabbar { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: rgba(16, 18, 18, 0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid var(--border-soft); }
+  .tabbar .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .tabbar .steps button { position: relative; width: 100%; min-height: 56px; padding: 10px 4px 8px; grid-template-columns: 1fr; justify-items: center; row-gap: 6px; font-size: 13px; }
+  .tabbar .steps button .name { display: inline; }
+  .tabbar .steps .track { position: absolute; top: 0; left: 18%; right: 18%; min-width: 0; height: 2px; border-radius: 2px; }
+  .tabbar .steps button.on { background: rgba(221, 255, 220, 0.05); }
+  .tabbar .steps button.on .tab-icon i.on { background: var(--lime); }
+  .tabbar .steps button.done .tab-icon i.on { background: var(--fern); }
+}
+@media (max-width: 700px) and (hover: none) { .tabbar .steps button:hover { background: transparent; color: inherit; } .tabbar .steps button.on:hover { background: rgba(221, 255, 220, 0.05); color: var(--phosphor); } }
+
+/* Gaze player: marker size comes from fixation duration (--s); phones get a full-width stage and a zoom. */
+.fix { width: var(--s); height: var(--s); }
+.attn-view { position: relative; }
+.attn-zoom { display: none; }
+@media (max-width: 700px) {
+  .attn-card { margin: 0 -24px; border-radius: 0; border-left: 0; border-right: 0; }
+  .attn-stage { padding: 12px 0; }
+  .attn .attn-stage .shot { border-radius: 0; border-left: 0; border-right: 0; }
+  .shot.gaze img { border-radius: 0; }
+  .fix { width: calc(var(--s) * 0.6); height: calc(var(--s) * 0.6); font-size: 9px; border-width: 1.5px; }
+  .cta-box b { padding: 2px 4px; font-size: 9px; }
+  .attn-zoom { display: inline-flex; position: absolute; top: 20px; right: 12px; z-index: 4; min-height: 36px; align-items: center; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border); background: rgba(16, 18, 18, 0.88); backdrop-filter: blur(8px); color: var(--phosphor); font: 500 13px/1 var(--font-ui); }
+  .attn-zoom[aria-pressed="true"] { background: var(--phosphor); color: var(--ground); border-color: var(--phosphor); }
+  .attn-stage.zoomed { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .attn-stage.zoomed::-webkit-scrollbar { display: none; }
+  .attn .attn-stage.zoomed .shot { width: 220%; max-width: none; margin: 0; }
+  .attn .attn-stage.zoomed .shot img { width: 100%; max-width: none; max-height: none; }
+  .attn-stage.zoomed .fix { width: calc(var(--s) * 0.85); height: calc(var(--s) * 0.85); font-size: 10px; }
+  .attn-stage.zoomed .cta-box b { font-size: 11px; }
+  .attn-tools { padding-left: 20px; padding-right: 20px; }
+}
+
+/* Copy that depends on the input: pointer instructions on desktop, touch instructions on phones. */
+.for-touch { display: none; }
+@media (hover: none) and (pointer: coarse) { .for-touch { display: inline; } .for-pointer { display: none; } }
+
+/* Brain viewer on phones: controls in rows above the brain, legend and hint below it, docked tooltip. */
+@media (max-width: 700px) {
+  .brain-card { margin: 0 -24px; border-radius: 0; border-left: 0; border-right: 0; }
+  .brain-tools { padding: 14px 16px; gap: 10px; }
+  .brain-tools .seg { width: 100%; }
+  .brain-tools .seg button { flex: 1; justify-content: center; }
+  .brain-canvas.surface { height: 520px; }
+  .brain-canvas.surface .hemi { top: 12px; left: 12px; right: 12px; justify-content: stretch; }
+  .brain-canvas.surface .hemi button { flex: 1; min-height: 36px; }
+  .brain-canvas.surface .opacity { top: 58px; left: 12px; right: 12px; display: grid; grid-template-columns: auto minmax(0, 1fr) 40px; row-gap: 6px; border-radius: 12px; padding: 8px 12px; }
+  .brain-canvas.surface .opacity input { width: 100%; min-height: 24px; }
+  .brain-canvas.surface .scale { left: 12px; bottom: 38px; }
+  .brain-canvas.surface .scale i { width: 96px; }
+  .brain-canvas.surface .drag-hint { left: 12px; right: 12px; bottom: 12px; text-align: left; line-height: 1.3; }
+  .brain-canvas.surface .tip { left: 12px !important; right: 12px; top: auto !important; bottom: 64px; width: auto; }
+  .brain-stage.is-slices { padding: 12px; }
+}
+
+/* Compact metric rows on phones (components/MetricCard.js) */
+.diag.compact { padding: 0; gap: 0; }
+.diag-sum { display: grid; grid-template-columns: minmax(0, 1fr) 20px; grid-template-areas: "head chev" "num chev"; align-items: center; row-gap: 8px; column-gap: 12px; width: 100%; min-height: 56px; padding: 16px 16px 16px 18px; background: transparent; border: 0; border-radius: inherit; color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.diag-sum .diag-head { grid-area: head; }
+.diag-sum .diag-num { grid-area: num; font-size: 30px; }
+.diag-chev { grid-area: chev; justify-self: end; width: 10px; height: 10px; border-right: 1.5px solid var(--sage-60); border-bottom: 1.5px solid var(--sage-60); transform: rotate(45deg) translateY(-3px); transition: transform 220ms var(--ease-out-strong, ease-out); }
+.diag.compact.open .diag-chev { transform: rotate(-135deg) translateY(-3px); }
+.diag-sum:focus-visible { outline: 2px solid var(--phosphor); outline-offset: -2px; }
+.diag-more { display: flex; flex-direction: column; gap: 14px; padding: 0 18px 18px; animation: more-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.diag-more[hidden] { display: none; }
+@keyframes more-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .diag-more { animation: none; } .diag-chev { transition: none; } }
+.diag.compact.wide { display: block; }
+.diag.compact .diag-viz { min-height: 0; }
+@media (max-width: 700px) {
+  .diag-grid, .brain-grid { gap: 10px; }
+  .brain-sub { margin-top: 32px; }
+}

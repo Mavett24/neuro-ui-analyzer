@@ -32,6 +32,8 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
   const [t, setT] = useState(() => (prefersReducedMotion() ? end : 0));
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(0.5);
+  // Phones: a landscape screenshot is tiny at screen width, so it can be viewed at 2.2x and panned.
+  const [zoom, setZoom] = useState(false);
   const [started, setStarted] = useState(prefersReducedMotion);
   const stage = useRef(null);
   const canvas = useRef(null);
@@ -124,6 +126,15 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
   };
   const nowBin = Math.min(WINDOW / BIN - 1, Math.floor(t / BIN));
 
+  // While zoomed, keep the current fixation in view.
+  const focus = current ? current.i : -1;
+  useEffect(() => {
+    const el = stage.current;
+    if (!zoom || !el || focus < 0) return;
+    const left = fx[focus].x * el.scrollWidth - el.clientWidth / 2;
+    el.scrollTo({ left, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+  }, [zoom, focus, fx]);
+
   // The jump in progress, drawn as a growing line.
   let jump = null;
   if (current && t < current.start && current.i > 0) {
@@ -139,59 +150,66 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
 
   return (
     <>
-      <div className="attn-stage" ref={stage}>
-        <div className="shot ready gaze">
-          <img src={preview} alt="Uploaded design" />
-          {heat && <canvas ref={canvas} className="heat" />}
-          <svg className="gaze-lines" viewBox={`0 0 1000 ${H}`} preserveAspectRatio="none" aria-hidden="true">
-            {shown.slice(1).map((f) => {
-              const a = fx[f.i - 1];
-              return (
-                <g key={f.i}>
-                  <line x1={a.x * 1000} y1={a.y * H} x2={f.x * 1000} y2={f.y * H} className="under" />
-                  <line x1={a.x * 1000} y1={a.y * H} x2={f.x * 1000} y2={f.y * H} />
+      <div className="attn-view">
+        <div className={`attn-stage ${zoom ? "zoomed" : ""}`} ref={stage}>
+          <div className="shot ready gaze">
+            <img src={preview} alt="Uploaded design" />
+            {heat && <canvas ref={canvas} className="heat" />}
+            <svg className="gaze-lines" viewBox={`0 0 1000 ${H}`} preserveAspectRatio="none" aria-hidden="true">
+              {shown.slice(1).map((f) => {
+                const a = fx[f.i - 1];
+                return (
+                  <g key={f.i}>
+                    <line x1={a.x * 1000} y1={a.y * H} x2={f.x * 1000} y2={f.y * H} className="under" />
+                    <line x1={a.x * 1000} y1={a.y * H} x2={f.x * 1000} y2={f.y * H} />
+                  </g>
+                );
+              })}
+              {jump && (
+                <g>
+                  <line {...jump} className="under" />
+                  <line {...jump} className="live" />
                 </g>
+              )}
+            </svg>
+            {shown.map((f) => {
+              const now = current === f && t >= f.start && t < end;
+              const size = 22 + Math.round((22 * (f.dur - 190)) / 210);
+              return (
+                <button
+                  key={f.i}
+                  type="button"
+                  className={`fix ${now ? "now" : ""} ${f.type === "cta" ? "on-cta" : ""}`}
+                  style={{ left: `${f.x * 100}%`, top: `${f.y * 100}%`, "--s": `${size}px` }}
+                  onClick={() => seek(f.start)}
+                  aria-label={`Fixation ${f.i + 1}: ${TYPE_LABEL[f.type]}, ${f.zone}, at ${secs(f.start)}`}
+                >
+                  {f.i + 1}
+                  {now && <i style={{ transform: `scale(${1 + Math.min(1, (t - f.start) / f.dur) * 0.9})` }} />}
+                </button>
               );
             })}
-            {jump && (
-              <g>
-                <line {...jump} className="under" />
-                <line {...jump} className="live" />
-              </g>
-            )}
-          </svg>
-          {shown.map((f) => {
-            const now = current === f && t >= f.start && t < end;
-            const size = 22 + Math.round((22 * (f.dur - 190)) / 210);
-            return (
-              <button
-                key={f.i}
-                type="button"
-                className={`fix ${now ? "now" : ""} ${f.type === "cta" ? "on-cta" : ""}`}
-                style={{ left: `${f.x * 100}%`, top: `${f.y * 100}%`, width: size, height: size }}
-                onClick={() => seek(f.start)}
-                aria-label={`Fixation ${f.i + 1}: ${TYPE_LABEL[f.type]}, ${f.zone}, at ${secs(f.start)}`}
+            {cta && (
+              <span
+                className="cta-box"
+                style={{
+                  left: `${cta.box.x * 100}%`,
+                  top: `${cta.box.y * 100}%`,
+                  width: `${cta.box.w * 100}%`,
+                  height: `${cta.box.h * 100}%`,
+                }}
               >
-                {f.i + 1}
-                {now && <i style={{ transform: `scale(${1 + Math.min(1, (t - f.start) / f.dur) * 0.9})` }} />}
-              </button>
-            );
-          })}
-          {cta && (
-            <span
-              className="cta-box"
-              style={{
-                left: `${cta.box.x * 100}%`,
-                top: `${cta.box.y * 100}%`,
-                width: `${cta.box.w * 100}%`,
-                height: `${cta.box.h * 100}%`,
-              }}
-            >
-              <b>CTA {cta.confidencePct}%</b>
-            </span>
-          )}
-          {!started && <span className="gaze-wait">Scroll here to play the first 3 seconds</span>}
+                <b>CTA {cta.confidencePct}%</b>
+              </span>
+            )}
+            {!started && <span className="gaze-wait">Scroll here to play the first 3 seconds</span>}
+          </div>
         </div>
+        {H < 830 && (
+          <button type="button" className="attn-zoom" onClick={() => setZoom((z) => !z)} aria-pressed={zoom}>
+            {zoom ? "Fit to screen" : "Zoom in"}
+          </button>
+        )}
       </div>
 
       <div className="player">

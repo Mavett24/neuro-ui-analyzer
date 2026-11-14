@@ -12,6 +12,7 @@ import WireframeSkeleton from "../../components/WireframeSkeleton";
 import GazePlayer from "../../components/GazePlayer";
 import UploadHero from "../../components/UploadHero";
 import PixelField from "../../components/PixelField";
+import MetricCard, { useCompact } from "../../components/MetricCard";
 import { getAnalysis, listAnalyses, patchAnalysis, saveAnalysis } from "../../lib/history";
 import { AttentionViz, BalanceViz, ClutterViz, ColourViz, ContrastViz, WhitespaceViz } from "../../components/DiagViz";
 
@@ -19,6 +20,12 @@ const SECTIONS = [
   ["attention", "Attention"],
   ["layout", "Layout"],
   ["brain", "Brain"],
+];
+// 5 by 5 pixel icons for the phone tab bar: an eye, a grid of blocks, a brain.
+const TAB_ICONS = [
+  [".....", ".###.", "#.#.#", ".###.", "....."],
+  ["##.##", "##.##", ".....", "##.##", "##.##"],
+  [".###.", "#.#.#", "##.##", "#.#.#", ".###."],
 ];
 // Each analysis is saved to this browser's history (lib/history.js), keyed by a hash of the
 // file's bytes, so uploading the same file again gives the same reading.
@@ -51,6 +58,7 @@ export default function Analyzer() {
   const [heat, setHeat] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [historyCount, setHistoryCount] = useState(0);
+  const compact = useCompact();
   useEffect(() => {
     const count = () => listAnalyses().then((l) => setHistoryCount(l.length));
     count();
@@ -285,26 +293,7 @@ export default function Analyzer() {
           </span>
           Neuro UI Analyzer
         </Link>
-        {showResults && (
-          <ol className="steps" aria-label="Sections of this analysis">
-            {SECTIONS.map(([id, name], i) => (
-              <li key={id}>
-                <button
-                  type="button"
-                  className={i === spy.active ? "on" : spy.parts[i] >= 1 ? "done" : ""}
-                  aria-current={i === spy.active ? "step" : undefined}
-                  onClick={() => goTo(id)}
-                >
-                  <span className="num">0{i + 1}</span>
-                  <span className="name">{name}</span>
-                  <span className="track" aria-hidden="true">
-                    <i style={{ transform: `scaleX(${spy.parts[i]})` }} />
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        )}
+        {showResults && <Steps spy={spy} goTo={goTo} />}
         <div className="nav-links">
           {showResults ? (
             <span className="pct" aria-label={`${overall}% of the analysis read`}>
@@ -318,6 +307,12 @@ export default function Analyzer() {
           </a>
         </div>
       </nav>
+
+      {showResults && (
+        <nav className="tabbar" aria-label="Sections of this analysis">
+          <Steps spy={spy} goTo={goTo} icons />
+        </nav>
+      )}
 
       <input ref={input} type="file" accept="image/*" hidden onChange={(e) => handle(e.target.files[0])} />
       {!showResults && !(urlId && !error) && (
@@ -480,8 +475,8 @@ export default function Analyzer() {
                                   viz: <AttentionViz saliency={result.saliency} box={cta?.box} />,
                                 }
                               : { big: f.value, unit: "", viz: null };
-                  return (
-                    <article key={f.label} className="diag">
+                  const summary = (
+                    <>
                       <div className="diag-head">
                         <span className="diag-label">{f.label}</span>
                         <span className={`chip ${f.status}`}>{STATUS[f.status]}</span>
@@ -490,9 +485,23 @@ export default function Analyzer() {
                         {card.big}
                         <small>{card.unit}</small>
                       </div>
+                    </>
+                  );
+                  const details = (
+                    <>
                       {card.viz && <div className="diag-viz">{card.viz}</div>}
                       <p>{f.note}</p>
                       {f.how && <p className="how">{f.how}</p>}
+                    </>
+                  );
+                  return compact ? (
+                    <MetricCard key={f.label} summary={summary}>
+                      {details}
+                    </MetricCard>
+                  ) : (
+                    <article key={f.label} className="diag">
+                      {summary}
+                      {details}
                     </article>
                   );
                 })}
@@ -594,5 +603,38 @@ export default function Analyzer() {
         </footer>
       </main>
     </>
+  );
+}
+
+// Section switcher. In the top bar on larger screens, and as a bottom tab bar on phones,
+// where the thumb can reach it.
+function Steps({ spy, goTo, icons = false }) {
+  return (
+    <ol className="steps" aria-label={icons ? undefined : "Sections of this analysis"}>
+      {SECTIONS.map(([id, name], i) => (
+        <li key={id}>
+          <button
+            type="button"
+            className={i === spy.active ? "on" : spy.parts[i] >= 1 ? "done" : ""}
+            aria-current={i === spy.active ? "step" : undefined}
+            onClick={() => goTo(id)}
+          >
+            {icons ? (
+              <span className="tab-icon" aria-hidden="true">
+                {TAB_ICONS[i].flatMap((row, y) =>
+                  row.split("").map((c, x) => <i key={`${x}${y}`} className={c === "#" ? "on" : ""} />)
+                )}
+              </span>
+            ) : (
+              <span className="num">0{i + 1}</span>
+            )}
+            <span className="name">{name}</span>
+            <span className="track" aria-hidden="true">
+              <i style={{ transform: `scaleX(${spy.parts[i]})` }} />
+            </span>
+          </button>
+        </li>
+      ))}
+    </ol>
   );
 }

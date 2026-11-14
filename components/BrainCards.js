@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadBrainData } from "../lib/brain";
+import MetricCard, { useCompact } from "./MetricCard";
 
 // Brain function cards: text on the left, a side-view "glass brain" of that function's own
 // NeuroQuery map on the right. The map shows where the function sits, brightness shows how
@@ -119,16 +120,15 @@ export default function BrainCards({ items, deep = false }) {
     };
   }, []);
   const proj = useMemo(() => (data ? projections(data) : null), [data]);
+  const compact = useCompact();
 
   return (
     <div className="brain-grid">
-      {items.map((w, i) => (
-        <article
-          key={w.key}
-          className={`diag wide${deep ? " deep" : ""}${w.weight > 0 ? "" : " inactive"}`}
-          style={deep && w.weight > 0 ? { animationDelay: `${i * 70}ms` } : undefined}
-        >
-          <div className="diag-body">
+      {items.map((w, i) => {
+        const cls = `wide${deep ? " deep" : ""}${w.weight > 0 ? "" : " inactive"}`;
+        const style = deep && w.weight > 0 ? { animationDelay: `${i * 70}ms` } : undefined;
+        const summary = (
+          <>
             <div className="diag-head">
               <span className="diag-label">{w.label}</span>
               <span className="chip">{level(w.weight)}</span>
@@ -137,9 +137,15 @@ export default function BrainCards({ items, deep = false }) {
               {w.weight.toFixed(2)}
               <small>engagement, 0 to 1</small>
             </div>
+          </>
+        );
+        const text = (
+          <>
             <p className="regions">{w.regions}</p>
             <p>{w.reason}</p>
-          </div>
+          </>
+        );
+        const viz = (
           <div className="diag-viz">
             <div className="viz-stack">
               <BrainMap proj={proj?.[w.key]} weight={w.weight} />
@@ -151,8 +157,22 @@ export default function BrainCards({ items, deep = false }) {
               </div>
             </div>
           </div>
-        </article>
-      ))}
+        );
+        return compact ? (
+          <MetricCard key={w.key} className={cls} style={style} summary={summary}>
+            {text}
+            {viz}
+          </MetricCard>
+        ) : (
+          <article key={w.key} className={`diag ${cls}`} style={style}>
+            <div className="diag-body">
+              {summary}
+              {text}
+            </div>
+            {viz}
+          </article>
+        );
+      })}
     </div>
   );
 }

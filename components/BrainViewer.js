@@ -102,9 +102,22 @@ function BrainSlices({ weights }) {
   // Release the viewer when switching tabs.
   useEffect(() => () => (nvRef.current = null), []);
 
+  // Niivue cancels touchstart, which would trap page scrolling on a phone. Keep touch events away
+  // from it: the page scrolls normally, and a tap still reaches Niivue as the browser's
+  // compatibility mouse click, which moves the crosshair.
+  const frame = useRef(null);
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const keep = (e) => e.stopPropagation();
+    const types = ["touchstart", "touchmove", "touchend"];
+    types.forEach((t) => el.addEventListener(t, keep, { capture: true, passive: true }));
+    return () => types.forEach((t) => el.removeEventListener(t, keep, { capture: true }));
+  }, []);
+
   return (
     <div className="slices">
-      <div className="brain-canvas">
+      <div className="brain-canvas" ref={frame}>
         <canvas ref={canvas} />
         {status && <p className="brain-status">{status}</p>}
       </div>
@@ -131,7 +144,10 @@ function BrainSlices({ weights }) {
               </p>
             </>
           ) : (
-            <p className="why">Click anywhere on a slice.</p>
+            <p className="why">
+              <span className="for-pointer">Click</span>
+              <span className="for-touch">Tap</span> anywhere on a slice.
+            </p>
           )}
         </div>
         <h3>How to read this</h3>
@@ -148,8 +164,15 @@ function BrainSlices({ weights }) {
             strongly. The bar underneath is the scale (a weighted z-score). Uncoloured areas fall below the threshold.
           </li>
           <li>
-            <b>Click to explore.</b> Click any spot to move the crosshair there, or scroll to step through slices. The
-            panel above names the region you are on, including deep structures the 3D surface cannot show.
+            <b>
+              <span className="for-pointer">Click</span>
+              <span className="for-touch">Tap</span> to explore.
+            </b>{" "}
+            <span className="for-pointer">
+              Click any spot to move the crosshair there, or scroll to step through slices.
+            </span>
+            <span className="for-touch">Tap any spot to move the crosshair there.</span> The panel above names the
+            region you are on, including deep structures the 3D surface cannot show.
           </li>
           <li>
             <b>Letters are directions.</b> L left, R right, A front, P back, S top, I bottom.

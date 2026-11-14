@@ -220,13 +220,25 @@ export default function BrainSurface({ weights }) {
         controls.maxDistance = 620;
         controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         controls.autoRotateSpeed = 0.7;
-        controls.addEventListener("start", () => (controls.autoRotate = false));
+        let touched = false;
+        controls.addEventListener("start", () => {
+          controls.autoRotate = false;
+          touched = true;
+        });
+        // On touch screens a vertical swipe scrolls the page instead of being trapped by the canvas.
+        // Sideways swipes still rotate, and a pinch still zooms.
+        renderer.domElement.style.touchAction = "pan-y";
 
+        const baseDistance = camera.position.length();
         const resize = () => {
           const w = el.clientWidth,
             h = el.clientHeight;
           renderer.setSize(w, h, false);
           camera.aspect = w / h;
+          // The field of view is vertical, so a narrow (phone) canvas would crop the brain's length.
+          // Pull the camera back until it fits, unless the user has already moved it.
+          if (!touched)
+            camera.position.setLength(Math.min(controls.maxDistance, baseDistance * Math.max(1, 1.45 / camera.aspect)));
           camera.updateProjectionMatrix();
           uniforms.uPx.value = (h * renderer.getPixelRatio()) / (2 * Math.tan((camera.fov * Math.PI) / 360));
         };
@@ -266,8 +278,8 @@ export default function BrainSurface({ weights }) {
             .slice(0, 2)
             .map((c) => c.label);
           setTip({
-            x: Math.min(m.x + 16, m.w - 290),
-            y: Math.min(m.y + 16, m.h - 170),
+            x: Math.max(8, Math.min(m.x + 16, m.w - 290)),
+            y: Math.max(8, Math.min(m.y + 16, m.h - 170)),
             name: region ? region.name : "Cortex",
             side: region?.side || (side ? "right" : "left"),
             about: region?.about || "",
@@ -283,8 +295,22 @@ export default function BrainSurface({ weights }) {
         };
         // Capture phase, so this runs before OrbitControls sees the event on the canvas.
         el.addEventListener("wheel", onWheel, { passive: false, capture: true });
-        el.addEventListener("pointermove", onMove);
-        el.addEventListener("pointerleave", onLeave);
+        // Touch has no hover: a tap (a touch that barely moves) inspects the spot instead.
+        let down = null;
+        const onDown = (e) => {
+          down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
+        };
+        const onUp = (e) => {
+          if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) return;
+          down = null;
+          onMove(e);
+        };
+        const onHover = (e) => e.pointerType === "mouse" && onMove(e);
+        const onExit = (e) => e.pointerType === "mouse" && onLeave();
+        el.addEventListener("pointermove", onHover);
+        el.addEventListener("pointerdown", onDown);
+        el.addEventListener("pointerup", onUp);
+        el.addEventListener("pointerleave", onExit);
         controls.addEventListener("start", () => setTip(null));
 
         // Only render while the viewer is on screen, so it does not compete with the rest of the page.
@@ -308,8 +334,10 @@ export default function BrainSurface({ weights }) {
           cancelAnimationFrame(frame);
           visibility.disconnect();
           el.removeEventListener("wheel", onWheel, { capture: true });
-          el.removeEventListener("pointermove", onMove);
-          el.removeEventListener("pointerleave", onLeave);
+          el.removeEventListener("pointermove", onHover);
+          el.removeEventListener("pointerdown", onDown);
+          el.removeEventListener("pointerup", onUp);
+          el.removeEventListener("pointerleave", onExit);
           observer.disconnect();
           controls.dispose();
           left.geometry.dispose();
@@ -432,7 +460,10 @@ export default function BrainSurface({ weights }) {
             </div>
           )}
           <p className="drag-hint">
-            Drag to rotate. Scroll to zoom. Ctrl + scroll to slice. Hover a highlighted area for details.
+            <span className="for-pointer">
+              Drag to rotate. Scroll to zoom. Ctrl + scroll to slice. Hover a highlighted area for details.
+            </span>
+            <span className="for-touch">Swipe sideways to rotate, pinch to zoom, tap a highlight for details.</span>
           </p>
         </>
       )}
