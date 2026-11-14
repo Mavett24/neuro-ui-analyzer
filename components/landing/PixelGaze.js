@@ -108,7 +108,13 @@ export default function PixelGaze() {
         <i />
         <span>attention.map</span>
       </div>
-      <div className={`px-stage ${phase === 2 ? "done" : ""}`} ref={stage} onPointerMove={move} data-cursor="inspect">
+      <div
+        className={`px-stage ${phase === 2 ? "done" : ""}`}
+        ref={stage}
+        onPointerMove={move}
+        onPointerDown={move}
+        data-cursor="inspect"
+      >
         <canvas ref={canvas} className="px-canvas" />
         <img
           ref={sharp}
@@ -136,7 +142,10 @@ export default function PixelGaze() {
           <i className="num" />
           fixation order
         </span>
-        <span>hover for the fovea</span>
+        <span>
+          <span className="for-pointer">hover</span>
+          <span className="for-touch">tap</span> for the fovea
+        </span>
       </div>
     </div>
   );

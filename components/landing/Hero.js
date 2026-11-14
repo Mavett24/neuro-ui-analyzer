@@ -72,7 +72,16 @@ export default function Hero() {
           <figcaption>
             <span className="mono">
               map {String(i + 1).padStart(2, "0")}/{String(BRAIN_CYCLE.length).padStart(2, "0")}
-              <em>{region ? "held while you look" : "hover to inspect"}</em>
+              <em>
+                {region ? (
+                  "held while you look"
+                ) : (
+                  <>
+                    <span className="for-pointer">hover to inspect</span>
+                    <span className="for-touch">tap to inspect</span>
+                  </>
+                )}
+              </em>
             </span>
             <span className="term" key={t.key}>
               <strong>{t.label}</strong>

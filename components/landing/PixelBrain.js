@@ -362,9 +362,20 @@ export default function PixelBrain({
       regionCb.current?.(null);
       start();
     };
+    // Touch has no hover: a tap opens the lens on that spot and holds it for a few seconds.
+    let release = 0;
+    const onHover = (e) => e.pointerType === "mouse" && onMove(e);
+    const onExit = (e) => e.pointerType === "mouse" && onLeave();
+    const onTap = (e) => {
+      if (e.pointerType === "mouse") return;
+      clearTimeout(release);
+      onMove(e);
+      release = setTimeout(onLeave, 3500);
+    };
     if (interactive) {
-      wrap.current.addEventListener("pointermove", onMove);
-      wrap.current.addEventListener("pointerleave", onLeave);
+      wrap.current.addEventListener("pointermove", onHover);
+      wrap.current.addEventListener("pointerleave", onExit);
+      wrap.current.addEventListener("pointerdown", onTap);
     }
 
     loadSurfaceData()
@@ -457,9 +468,11 @@ export default function PixelBrain({
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
+      clearTimeout(release);
       if (interactive) {
-        el.removeEventListener("pointermove", onMove);
-        el.removeEventListener("pointerleave", onLeave);
+        el.removeEventListener("pointermove", onHover);
+        el.removeEventListener("pointerleave", onExit);
+        el.removeEventListener("pointerdown", onTap);
       }
       hemis.forEach((g) => g.dispose());
       material.dispose();

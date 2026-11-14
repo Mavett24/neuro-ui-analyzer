@@ -91,7 +91,7 @@ export default function PixelDetect() {
         {FOUND.map((f, i) => (
           <span
             key={f.label}
-            className={`px-box k-${f.kind.toLowerCase()} ${hot === i ? "hot" : ""}`}
+            className={`px-box k-${f.kind.toLowerCase()} ${hot === i ? "hot" : ""} ${f.box[0] > 0.5 ? "end" : ""}`}
             style={{
               left: `${f.box[0] * 100}%`,
               top: `${f.box[1] * 100}%`,

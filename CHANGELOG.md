@@ -15,6 +15,7 @@ First working beta.
 - Optional deep research analysis through Gemini: content detection and a streamed written review.
 - Landing page with a waitlist form, and a sample design to try the analyzer on.
 - History of analyses stored in IndexedDB.
+- Mobile-first layout: a bottom tab bar for the report sections, a full-width heatmap with zoom, collapsible metric cards, and touch gestures for the brain viewer (tap to inspect, vertical swipes scroll the page).
 - Unit tests for the layout heuristics, CTA detection, scanpath and brain weighting, including a determinism check.
 - ESLint, Prettier and a GitHub Actions workflow that lints, tests and builds every push.
 - Method, architecture, security and contributing docs, third-party notices and an MIT license.
