@@ -1,0 +1,16 @@
+name: Feature or method suggestion
+description: Propose a feature, or a change to how something is measured
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What decision would this help a designer make?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: If it changes a measure, link the research it's based on.
