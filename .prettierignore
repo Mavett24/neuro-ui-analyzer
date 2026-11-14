@@ -1,0 +1,9 @@
+# Data and compact stylesheets are kept in their hand-written layout
+lib/regions.js
+*.css
+public/
+.next/
+package-lock.json
+README.md
+CHANGELOG.md
+docs/
