@@ -1,120 +1,150 @@
-# Neuro UI Analyzer
+<p align="center">
+  <img src="docs/screenshots/banner.webp" alt="Neuro UI Analyzer: know what the brain sees first" width="100%">
+</p>
 
-Upload a screenshot of an interface and get a prediction of how people will look at it: where attention lands in the first three seconds, how the layout measures up against perception research, and which brain systems the design is likely to engage.
+<h1 align="center">Neuro UI Analyzer</h1>
 
-Every number is labelled as an estimate and shows how it was computed. Same image in, same reading out.
+<p align="center">
+  Predict where attention lands on an interface, check the layout against perception research,<br>
+  and see which brain systems a design is likely to engage. Before you spend a user test on it.
+</p>
 
-![Landing page](docs/screenshots/landing.webp)
+<p align="center">
+  <a href="https://github.com/mavett24/neuro-ui-analyzer/actions/workflows/ci.yml"><img src="https://github.com/mavett24/neuro-ui-analyzer/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7fee64?labelColor=181818" alt="MIT license"></a>
+  <img src="https://img.shields.io/badge/Next.js-16-ddffdc?logo=nextdotjs&logoColor=ddffdc&labelColor=181818" alt="Next.js 16">
+  <img src="https://img.shields.io/badge/React-19-ddffdc?logo=react&logoColor=ddffdc&labelColor=181818" alt="React 19">
+  <img src="https://img.shields.io/badge/ONNX_Runtime-Web-ddffdc?logo=onnx&logoColor=ddffdc&labelColor=181818" alt="ONNX Runtime Web">
+  <img src="https://img.shields.io/badge/three.js-r187-ddffdc?logo=threedotjs&logoColor=ddffdc&labelColor=181818" alt="three.js">
+</p>
 
-## What it does
+<p align="center">
+  <a href="docs/METHOD.md">Method</a> ·
+  <a href="docs/ARCHITECTURE.md">Architecture</a> ·
+  <a href="#getting-started">Getting started</a> ·
+  <a href="THIRD_PARTY_NOTICES.md">Data licenses</a>
+</p>
 
-**1. Predicted attention**
+<p align="center">
+  <img src="docs/screenshots/gaze-playback.webp" alt="Predicted gaze over the first 3 seconds, fixation by fixation" width="820">
+  <br><sub>Predicted first 3 seconds of viewing, from a gaze model trained on eye-tracking data.</sub>
+</p>
 
-A gaze model trained on human eye-tracking data predicts where people look during free viewing. The app turns that map into a predicted sequence of fixations over the first three seconds and checks whether, and when, the primary CTA gets seen.
+## Why
 
-![Attention heatmap and predicted scanpath](docs/screenshots/attention.webp)
+User testing tells you how real people look at a design, but it's slow and expensive, so most layout decisions are made without it. This tool gives a research-grounded prediction in seconds: where the eyes go first, whether the main action gets seen, and what the layout asks of the viewer.
 
-**2. Layout diagnostics**
+Every number is an estimate, it says so, and it shows how it was computed. The same image always gives the same reading, so two versions of a design can be compared fairly.
 
-Six measures computed straight from the pixels, with no AI involved: white space, visual clutter, colour palette, left/right balance, CTA contrast and attention on the CTA. Each card shows the data behind its number and how it was measured.
+## Features
 
-![Layout diagnostic cards](docs/screenshots/layout.webp)
+| | |
+| --- | --- |
+| **Predicted attention**<br>A saliency model trained on human eye-tracking predicts a gaze heatmap. A scanpath model turns it into an ordered sequence of fixations over the first 3 seconds, and reports whether and when the primary CTA gets seen. | <img src="docs/screenshots/attention.webp" alt="Attention heatmap and scanpath" width="420"> |
+| **Layout diagnostics**<br>Six measures computed straight from the pixels, with no AI: white space, visual clutter, colour palette, left/right balance, CTA contrast and attention on the CTA. Each card shows the data behind its number. | <img src="docs/screenshots/layout.webp" alt="Layout diagnostic cards" width="420"> |
+| **Brain regions**<br>Ten meta-analytic fMRI maps from about 13,000 studies, weighted by what was measured in the design. Shown on a rotatable 3D cortex and as MRI slices with region names. | <img src="docs/screenshots/brain.webp" alt="3D brain view" width="420"> |
+| **History**<br>Every analysis is saved in the browser. Reopening one restores the exact report instantly, with nothing recomputed and nothing uploaded. | <img src="docs/screenshots/history.webp" alt="History page" width="420"> |
 
-**3. Brain regions**
-
-Real meta-analytic fMRI maps, one per cognitive function (visual processing, attention, working memory load, colour, reading, faces, objects, scenes, reward, decision making), weighted by what was measured in the design. Shown on a 3D cortical surface and as MRI slices with region names.
-
-![3D brain view](docs/screenshots/brain.webp)
-
-**4. Deep research analysis (optional)**
-
-On request, a vision model reads the content of the screen (text, faces, imagery, prices, actions) to add six content-based functions to the brain map, then writes a review that names the design principle behind each issue.
-
-**5. History**
-
-Every analysis is saved in the browser, so you can reopen a past design and get the exact same report, including any deep analysis, without running anything again.
-
-![History page](docs/screenshots/history.webp)
+An optional **deep research analysis** sends a downscaled copy to a vision model. It detects content (text, faces, imagery, prices, actions) to add six more brain functions, then writes a review that names the design principle behind each issue.
 
 ## How it works
 
-| Part | Method | Runs |
-| --- | --- | --- |
-| Attention | UNISAL saliency model (ONNX), then winner-take-all with inhibition of return for the fixation order | In the browser |
-| Layout | Block-based pixel analysis, colours grouped in OKLab, CTA contrast checked against WCAG 2.2 non-text contrast | In the browser |
-| Brain | NeuroQuery maps weighted by the measured features, drawn on the ICBM152 surface with AAL region labels | In the browser |
-| Deep analysis | Gemini API (free tier) for content detection and the written review | Server route, opt-in |
-| History | IndexedDB, keyed by a SHA-256 hash of the image | In the browser |
+<p align="center">
+  <img src="docs/architecture.svg" alt="Architecture: decode, layout heuristics, gaze model and brain weighting run in the browser; the deep analysis is an opt-in server call to Gemini" width="100%">
+</p>
 
-Images never leave the device unless you ask for the deep research analysis.
+1. **Decode.** The screenshot is decoded and downscaled in halving steps, because a single large resize blurs thin text and shifts predicted attention off headlines.
+2. **Layout heuristics.** 8 px blocks are classified as empty, detail or imagery. The palette is clustered in OKLab, and filled buttons are scored and returned only above a confidence threshold.
+3. **Gaze model.** [UNISAL](https://github.com/rdroste/unisal) runs through ONNX Runtime Web. The fixation order follows winner-take-all with inhibition of return (Itti, Koch & Niebur, 1998).
+4. **Brain weighting.** Measured features become weights on [NeuroQuery](https://neuroquery.org) maps, blended and drawn with Niivue and three.js.
+
+The full method, with every formula and threshold, is in [docs/METHOD.md](docs/METHOD.md). Design decisions and the data flow are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Tech stack
+
+| Area | Choice |
+| --- | --- |
+| Framework | Next.js 16 (App Router), React 19 |
+| In-browser ML | ONNX Runtime Web (WASM) running UNISAL |
+| 3D and imaging | three.js for the cortical surface, Niivue for MRI slices |
+| Storage | IndexedDB, keyed by a SHA-256 of the image |
+| AI review | Gemini API through server routes, streamed |
+| Quality | Vitest, ESLint (`next/core-web-vitals`), Prettier, GitHub Actions |
+
+## Getting started
+
+Requires Node.js 20 or newer.
+
+```bash
+git clone https://github.com/mavett24/neuro-ui-analyzer.git
+cd neuro-ui-analyzer
+npm install
+npm run dev
+```
+
+Open http://localhost:3000. The landing page is at `/` and the analyzer at `/app`.
+
+Everything except the deep research analysis works without any setup. To enable it, copy `.env.example` to `.env.local` and add a free key from [Google AI Studio](https://aistudio.google.com/apikey):
+
+```bash
+GEMINI_API_KEY=your-key
+```
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm test` | Run the unit tests |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier |
+| `npm run check` | Lint, format check and tests, as in CI |
+
+### Deploy
+
+Import the repository in Vercel and add `GEMINI_API_KEY` under Project Settings, Environment Variables. No other configuration is needed.
+
+## Testing
+
+The analysis core is pure functions over pixel arrays, so it's tested in Node with synthetic screenshots drawn straight into RGBA buffers. No browser or canvas is needed.
+
+- **Determinism:** the same pixels always produce identical metrics and findings.
+- **Layout:** a blank screen, clutter ordering, metric ranges, and a regression test for grey gradients inflating the palette.
+- **CTA detection:** finds a labelled filled button at the right position, and returns nothing for blank screens or unlabelled blocks.
+- **Scanpath:** the first fixation lands on the peak, targets are visited in order of salience, timing stays within the 3 second window, and the CTA hit is reported.
+- **Brain weighting:** every function stays in range with a written reason, and content-based functions stay pending until content is detected.
+
+CI runs lint, the format check, tests and a production build on every push and pull request.
+
+## Privacy
+
+The gaze model, layout analysis, brain maps and history all run in the browser. Screenshots never leave the device unless the user starts a deep research analysis, which sends a downscaled JPEG to the Gemini API. The UI warns against using it on confidential work, because free tier requests may be used to improve Google's products.
 
 ## Assumptions and limits
 
 This is a prediction tool, not a measurement of real users.
 
-- **The gaze model was trained on photos, not interfaces.** It is a strong prior for where people look, not a recording. It also can't see motion, so animated elements are likely underrated.
-- **Free viewing only.** The prediction covers the first seconds without a specific task in mind. Once a user is looking for something, goals take over.
-- **The brain view is an estimate, not a scan.** The maps come from published studies and describe where research places a function across a population. How strongly a design engages each one is this tool's model, and the formula is shown on every card.
+- **The gaze model was trained on photos, not interfaces.** It's a strong prior for where people look, not a recording. It also can't see motion, so animated elements are likely underrated.
+- **Free viewing only.** The prediction covers the first seconds without a specific task in mind.
+- **The brain view is an estimate, not a scan.** The maps describe where research places each function across a population. How strongly a design engages each one is this tool's model, and the formula is shown on every card.
 - **Only filled buttons count as CTA candidates.** Ghost buttons and text links are skipped.
 - **The deep analysis can misread a screen.** The measured numbers stay the evidence.
 
-## Run locally
+## Roadmap
 
-Requires Node.js 20 or newer.
-
-```bash
-npm install
-cp .env.example .env.local   # then paste a free Gemini key from https://aistudio.google.com/apikey
-npm run dev
-```
-
-Open http://localhost:3000. Everything except the deep research analysis works without a key.
-
-## Deploy
-
-Import the repository in Vercel and add `GEMINI_API_KEY` under Project Settings, Environment Variables.
-
-## Project structure
-
-```
-app/
-  page.js              landing page
-  app/page.js          the analyzer
-  history/page.js      saved analyses
-  brain/page.js        standalone brain viewer demo
-  api/features/        content detection (Gemini)
-  api/review/          written review (Gemini, streamed)
-components/            analyzer UI, brain viewer, landing page visuals
-lib/
-  heuristics.js        layout metrics and the analysis pipeline
-  saliency.js          UNISAL inference
-  scanpath.js          predicted fixation sequence
-  cta.js               primary button detection
-  brain.js             feature to brain-map weighting
-  regions.js           AAL region names and descriptions
-  history.js           IndexedDB history
-public/
-  models/unisal.onnx   gaze model
-  brain/               precomputed maps, surface mesh and atlas
-```
-
-## Status
-
-Working beta. The waitlist form on the landing page is a front end only and doesn't store emails yet.
-
-## Credits
-
-- UNISAL: Droste, Jiao & Noble (2020), *Unified Image and Video Saliency Modeling*, ECCV. Apache 2.0.
-- NeuroQuery: Dockès et al. (2020), *NeuroQuery, comprehensive meta-analysis of human brain mapping*, eLife.
-- ICBM152 template: McConnell Brain Imaging Centre, Montreal Neurological Institute.
-- AAL atlas: Tzourio-Mazoyer et al. (2002), NeuroImage.
-- Scanpath method: Itti, Koch & Niebur (1998), IEEE PAMI.
-- ONNX Runtime Web, Niivue and three.js for inference and rendering.
-
-The model weights and brain data in `public/` are redistributed under their original terms. Check those before any commercial use.
+- [x] Gaze heatmap, scanpath playback, layout diagnostics and brain maps
+- [x] Local history with instant reopening
+- [ ] A dedicated page for each part of the report
+- [ ] Storage behind the landing page waitlist (the form is front end only for now)
+- [ ] Public deployment
 
 ## License
 
-Copyright (c) 2026 Matteo Favetta. All rights reserved. The source is public to read; ask before reusing it.
+The source code is released under the [MIT license](LICENSE).
+
+The model weights and brain data in `public/` keep their original licenses (Apache 2.0, BSD and the MNI notice), listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The two AAL atlas files are under the GNU GPL and are not covered by the MIT license.
+
+## Credits
 
 Built by [Matteo Favetta](https://matteofavetta.com), product designer with an MSc in Applied Cognitive Psychology.
+
+Research behind the tool: Droste, Jiao & Noble (2020) for UNISAL; Dockès et al. (2020) for NeuroQuery; Itti, Koch & Niebur (1998) for the scanpath model; Tzourio-Mazoyer et al. (2002) for the AAL atlas; and the McConnell Brain Imaging Centre for the ICBM152 template.
