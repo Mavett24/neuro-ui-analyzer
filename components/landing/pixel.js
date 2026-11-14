@@ -36,7 +36,8 @@ export function sampleGrid(cols, rows, src = "/demo/sample.jpg") {
         const img = new Image();
         img.onload = () => {
           const sub = 4; // pixels per cell side in the working copy
-          const W = cols * sub, H = rows * sub;
+          const W = cols * sub,
+            H = rows * sub;
           const c = document.createElement("canvas");
           c.width = W;
           c.height = H;
@@ -48,7 +49,8 @@ export function sampleGrid(cols, rows, src = "/demo/sample.jpg") {
           const std = new Float32Array(cols * rows);
           for (let y = 0; y < rows; y++)
             for (let x = 0; x < cols; x++) {
-              let s = 0, s2 = 0;
+              let s = 0,
+                s2 = 0;
               for (let j = 0; j < sub; j++)
                 for (let i = 0; i < sub; i++) {
                   const k = ((y * sub + j) * W + x * sub + i) * 4;
@@ -56,7 +58,8 @@ export function sampleGrid(cols, rows, src = "/demo/sample.jpg") {
                   s += l;
                   s2 += l * l;
                 }
-              const n = sub * sub, m = s / n;
+              const n = sub * sub,
+                m = s / n;
               lum[y * cols + x] = m;
               std[y * cols + x] = Math.sqrt(Math.max(0, s2 / n - m * m));
             }
@@ -72,7 +75,8 @@ export function sampleGrid(cols, rows, src = "/demo/sample.jpg") {
 // Size a canvas to its box at device resolution; returns css width and height.
 export function fit(canvas) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const w = canvas.clientWidth,
+    h = canvas.clientHeight;
   canvas.width = Math.max(1, Math.round(w * dpr));
   canvas.height = Math.max(1, Math.round(h * dpr));
   const ctx = canvas.getContext("2d");

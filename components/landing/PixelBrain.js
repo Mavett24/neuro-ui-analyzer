@@ -139,7 +139,16 @@ const QUAD_FRAG = /* glsl */ `
   }
 `;
 
-export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion, terms = CYCLE, focus = null, interactive = false, zoom = 1 }) {
+export default function PixelBrain({
+  cell = 7,
+  className = "",
+  onTerm,
+  onRegion,
+  terms = CYCLE,
+  focus = null,
+  interactive = false,
+  zoom = 1,
+}) {
   const wrap = useRef(null);
   const canvasRef = useRef(null);
   const [ready, setReady] = useState(false);
@@ -162,7 +171,13 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
     const canvas = canvasRef.current;
     let renderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: "low-power" });
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: false,
+        premultipliedAlpha: true,
+        powerPreference: "low-power",
+      });
     } catch {
       return; // no WebGL: the copy still carries the section
     }
@@ -171,9 +186,17 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(26, 1, 10, 2000);
     camera.up.set(0, 0, 1);
-    const target = new THREE.WebGLRenderTarget(8, 8, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+    const target = new THREE.WebGLRenderTarget(8, 8, {
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+    });
     const uniforms = { uMix: { value: 0 } };
-    const material = new THREE.ShaderMaterial({ vertexShader: BRAIN_VERT, fragmentShader: BRAIN_FRAG, uniforms, side: THREE.DoubleSide });
+    const material = new THREE.ShaderMaterial({
+      vertexShader: BRAIN_VERT,
+      fragmentShader: BRAIN_FRAG,
+      uniforms,
+      side: THREE.DoubleSide,
+    });
 
     const q = {
       uTex: { value: target.texture },
@@ -189,7 +212,10 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
     const quadScene = new THREE.Scene();
     const quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     quadScene.add(
-      new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({ vertexShader: QUAD_VERT, fragmentShader: QUAD_FRAG, uniforms: q, transparent: true }))
+      new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 2),
+        new THREE.ShaderMaterial({ vertexShader: QUAD_VERT, fragmentShader: QUAD_FRAG, uniforms: q, transparent: true })
+      )
     );
 
     const pivot = new THREE.Group();
@@ -198,7 +224,8 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
     let maps = null; // [term][hemi] -> Float32Array
     let hemis = [];
     let meshes = [];
-    let a = 0, b = 1 % cycle.length; // shown map, next map
+    let a = 0,
+      b = 1 % cycle.length; // shown map, next map
     let blendStart = 0; // 0 = holding
     let holdStart = 0;
     let revealStart = 0;
@@ -264,7 +291,9 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
       const region = REGIONS[data.labels[side * data.nv + v]];
       const g = hit.object.geometry.attributes;
       const act = g.aA.array[v] * (1 - uniforms.uMix.value) + g.aB.array[v] * uniforms.uMix.value;
-      regionCb.current(region ? { ...region, side: region.side || (side ? "right" : "left"), act, x: pointer.x, y: pointer.y } : null);
+      regionCb.current(
+        region ? { ...region, side: region.side || (side ? "right" : "left"), act, x: pointer.x, y: pointer.y } : null
+      );
     };
 
     const render = (now) => {
@@ -440,7 +469,11 @@ export default function PixelBrain({ cell = 7, className = "", onTerm, onRegion,
   }, [cell, list, interactive, zoom, termCb, regionCb, focusRef]);
 
   return (
-    <div ref={wrap} className={`pixel-brain ${ready ? "ready" : ""} ${className}`} data-cursor={interactive ? "inspect" : undefined}>
+    <div
+      ref={wrap}
+      className={`pixel-brain ${ready ? "ready" : ""} ${className}`}
+      data-cursor={interactive ? "inspect" : undefined}
+    >
       <canvas ref={canvasRef} aria-hidden="true" />
     </div>
   );

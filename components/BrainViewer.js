@@ -137,22 +137,19 @@ function BrainSlices({ weights }) {
         <h3>How to read this</h3>
         <ul>
           <li>
-            <b>Three cuts through one brain.</b> Top left is seen from behind (so left is on the left), top right
-            from the side, bottom left from above. The white lines mark the same point in all three.
+            <b>Three cuts through one brain.</b> Top left is seen from behind (so left is on the left), top right from
+            the side, bottom left from above. The white lines mark the same point in all three.
           </li>
           <li>
-            <b>Grey is anatomy.</b> It is a standard average brain (MNI152), not a scan of anyone in
-            particular.
+            <b>Grey is anatomy.</b> It is a standard average brain (MNI152), not a scan of anyone in particular.
           </li>
           <li>
-            <b>Colour is the estimate.</b> Red areas are linked to processing what is in your design,
-            yellow more strongly. The bar underneath is the scale (a weighted z-score). Uncoloured areas
-            fall below the threshold.
+            <b>Colour is the estimate.</b> Red areas are linked to processing what is in your design, yellow more
+            strongly. The bar underneath is the scale (a weighted z-score). Uncoloured areas fall below the threshold.
           </li>
           <li>
-            <b>Click to explore.</b> Click any spot to move the crosshair there, or scroll to step through
-            slices. The panel above names the region you are on, including deep structures the 3D
-            surface cannot show.
+            <b>Click to explore.</b> Click any spot to move the crosshair there, or scroll to step through slices. The
+            panel above names the region you are on, including deep structures the 3D surface cannot show.
           </li>
           <li>
             <b>Letters are directions.</b> L left, R right, A front, P back, S top, I bottom.
@@ -179,7 +176,11 @@ function Reveal({ onProgress, onDone }) {
     const canvas = ref.current;
     const ctx = canvas.getContext("2d");
     const cell = 12;
-    let frame = 0, start = 0, cols = 0, rows = 0, order = null;
+    let frame = 0,
+      start = 0,
+      cols = 0,
+      rows = 0,
+      order = null;
 
     const size = () => {
       canvas.width = canvas.clientWidth;
@@ -190,7 +191,8 @@ function Reveal({ onProgress, onDone }) {
       const far = Math.hypot(cols / 2, rows / 2);
       for (let y = 0; y < rows; y++)
         for (let x = 0; x < cols; x++)
-          order[y * cols + x] = 0.62 * (Math.hypot(x - cols / 2, y - rows / 2) / far) + 0.38 * BAYER[(x & 3) + ((y & 3) << 2)];
+          order[y * cols + x] =
+            0.62 * (Math.hypot(x - cols / 2, y - rows / 2) / far) + 0.38 * BAYER[(x & 3) + ((y & 3) << 2)];
     };
     const draw = (p) => {
       const e = p * p * (3 - 2 * p); // smoothstep
@@ -265,7 +267,13 @@ export default function BrainViewer({ weights, initialView = "surface" }) {
       <div className="brain-tools">
         <div className="seg" role="tablist" aria-label="Brain view">
           {VIEWS.map(([id, label]) => (
-            <button key={id} role="tab" aria-selected={view === id} className={view === id ? "on" : ""} onClick={() => setView(id)}>
+            <button
+              key={id}
+              role="tab"
+              aria-selected={view === id}
+              className={view === id ? "on" : ""}
+              onClick={() => setView(id)}
+            >
               <b aria-hidden="true" className={id} />
               {label}
             </button>
@@ -279,7 +287,11 @@ export default function BrainViewer({ weights, initialView = "surface" }) {
       </div>
       <div className="review-foot" aria-live="polite">
         <span className={revealed ? "" : "live"}>
-          {revealed ? "complete" : progress ? `generating activation map ${String(progress).padStart(2, "0")}%` : "waiting"}
+          {revealed
+            ? "complete"
+            : progress
+              ? `generating activation map ${String(progress).padStart(2, "0")}%`
+              : "waiting"}
         </span>
         <span>NeuroQuery meta-analytic maps</span>
         <span>{active} functions blended</span>

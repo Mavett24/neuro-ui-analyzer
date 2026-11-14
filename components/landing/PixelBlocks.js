@@ -8,7 +8,8 @@ import { useSample } from "./useSample";
 // Metric 02. The sample page split into blocks, the way the layout check reads it. Each tab lights
 // the blocks behind one measure; switching dissolves cell by cell. Still at rest.
 
-const COLS = 64, ROWS = 32;
+const COLS = 64,
+  ROWS = 32;
 const MODES = [
   { key: "space", name: "White space", what: "Flat blocks with nothing on them" },
   { key: "clutter", name: "Clutter", what: "Blocks holding detail, brighter where it is denser" },
@@ -48,7 +49,14 @@ export default function PixelBlocks() {
     if (key === "clutter") return !empty && detail > bayer(x, y) * 0.9 ? (detail > 0.75 ? C.phosphor : C.lime) : base;
     if (key === "balance") return !empty && detail > 0.08 ? (x < COLS / 2 ? C.lime : C.phosphor) : base;
     const b = sample?.stats.cta.box;
-    if (b && (x + 0.5) / COLS >= b.x && (x + 0.5) / COLS <= b.x + b.w && (y + 0.5) / ROWS >= b.y && (y + 0.5) / ROWS <= b.y + b.h) return C.lime;
+    if (
+      b &&
+      (x + 0.5) / COLS >= b.x &&
+      (x + 0.5) / COLS <= b.x + b.w &&
+      (y + 0.5) / ROWS >= b.y &&
+      (y + 0.5) / ROWS <= b.y + b.h
+    )
+      return C.lime;
     return inkTone(ink * 0.6, x, y);
   };
 
@@ -56,7 +64,9 @@ export default function PixelBlocks() {
     if (!grid || !canvas.current) return;
     const { from, to, k } = state.current;
     const { ctx, w, h } = fit(canvas.current);
-    const cw = w / COLS, ch = h / ROWS, g = Math.max(1, cw * 0.12);
+    const cw = w / COLS,
+      ch = h / ROWS,
+      g = Math.max(1, cw * 0.12);
     ctx.clearRect(0, 0, w, h);
     for (let y = 0; y < ROWS; y++)
       for (let x = 0; x < COLS; x++) {
@@ -91,7 +101,8 @@ export default function PixelBlocks() {
   }, [drawRef]);
 
   // Balance share from the same blocks, so the number matches the picture.
-  let left = 0, right = 0;
+  let left = 0,
+    right = 0;
   if (grid)
     for (let y = 0; y < ROWS; y++)
       for (let x = 0; x < COLS; x++) {

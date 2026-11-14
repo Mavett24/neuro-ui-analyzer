@@ -6,7 +6,8 @@ import { fit, inkTone, rgb, sampleGrid, tween, ease } from "./pixel";
 // Metric 04. What the vision model reads that pixels cannot: the content of the screen. The page
 // is drawn in pixels, then each detection frames itself in. Example output for the sample page.
 
-const COLS = 120, ROWS = 60;
+const COLS = 120,
+  ROWS = 60;
 const FOUND = [
   { kind: "Text", label: "Headline", box: [0.04, 0.26, 0.43, 0.2] },
   { kind: "Text", label: "Body copy", box: [0.04, 0.48, 0.36, 0.13] },
@@ -30,11 +31,15 @@ export default function PixelDetect() {
   const [hot, setHot] = useState(null);
 
   useEffect(() => {
-    let grid = null, p = 0, cancel = () => {};
+    let grid = null,
+      p = 0,
+      cancel = () => {};
     const draw = () => {
       if (!grid) return;
       const { ctx, w, h } = fit(canvas.current);
-      const cw = w / COLS, ch = h / ROWS, g = Math.max(1, cw * 0.14);
+      const cw = w / COLS,
+        ch = h / ROWS,
+        g = Math.max(1, cw * 0.14);
       ctx.clearRect(0, 0, w, h);
       const rows = Math.ceil(p * ROWS);
       for (let y = 0; y < rows; y++)
@@ -87,7 +92,13 @@ export default function PixelDetect() {
           <span
             key={f.label}
             className={`px-box k-${f.kind.toLowerCase()} ${hot === i ? "hot" : ""}`}
-            style={{ left: `${f.box[0] * 100}%`, top: `${f.box[1] * 100}%`, width: `${f.box[2] * 100}%`, height: `${f.box[3] * 100}%`, "--d": `${i * 110}ms` }}
+            style={{
+              left: `${f.box[0] * 100}%`,
+              top: `${f.box[1] * 100}%`,
+              width: `${f.box[2] * 100}%`,
+              height: `${f.box[3] * 100}%`,
+              "--d": `${i * 110}ms`,
+            }}
             onPointerEnter={() => setHot(i)}
             onPointerLeave={() => setHot(null)}
             data-cursor="inspect"

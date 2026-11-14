@@ -8,16 +8,25 @@ import { loadBrainData } from "../lib/brain";
 // strongly this design is estimated to engage it.
 
 // Side-view outline of the MNI152 template on the 4mm map grid (55 x 46, bit-packed, bottom row first).
-const SILHOUETTE = "AAAeAAAAAAAA/AAAAAAAD/wAAAAAAH/8AAAAAAH/+AAAAAAH//z8AAAAH////wAAAD////4AAAD////+AAAB/////AAAA//////wAAf/////+AAP//////gAf//////4AP//////8AP///////AH///////gD///////wB///////4A///////8Af//////+AP///////AH///////gB///////gA///////wAf//////wAH//////4AB//////4AA//////8AAP/////8AAD/////8AAB/////8AAAf////8AAAH////8AAAD////4AAAA////wAAAAH///gAAAAA///AAAAAAP/4AAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-const NY = 55, NZ = 46;
+const SILHOUETTE =
+  "AAAeAAAAAAAA/AAAAAAAD/wAAAAAAH/8AAAAAAH/+AAAAAAH//z8AAAAH////wAAAD////4AAAD////+AAAB/////AAAA//////wAAf/////+AAP//////gAf//////4AP//////8AP///////AH///////gD///////wB///////4A///////8Af//////+AP///////AH///////gB///////gA///////wAf//////wAH//////4AB//////4AA//////8AAP/////8AAD/////8AAB/////8AAAf////8AAAH////8AAAD////4AAAA////wAAAAH///gAAAAA///AAAAAAP/4AAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+const NY = 55,
+  NZ = 46;
 const CROP = { y0: 4, y1: 52, z0: 0, z1: 41 }; // tight box around the brain
 const Z_MIN = 21; // z = 3 in map units (maps are stored as z * 7)
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + 0.5) / 16);
 // Red to yellow, the same activation scale as the 3D brain.
-const RAMP = [[140, 0, 5], [242, 26, 5], [255, 133, 10], [255, 224, 64], [255, 250, 209]];
+const RAMP = [
+  [140, 0, 5],
+  [242, 26, 5],
+  [255, 133, 10],
+  [255, 224, 64],
+  [255, 250, 209],
+];
 const ramp = (t) => {
   const p = Math.max(0, Math.min(0.9999, t)) * (RAMP.length - 1);
-  const i = Math.floor(p), f = p - i;
+  const i = Math.floor(p),
+    f = p - i;
   return RAMP[i].map((c, k) => Math.round(c + (RAMP[i + 1][k] - c) * f));
 };
 
@@ -57,7 +66,8 @@ function BrainMap({ proj, weight }) {
   useEffect(() => {
     const c = ref.current;
     const s = 4;
-    const cols = CROP.y1 - CROP.y0, rows = CROP.z1 - CROP.z0;
+    const cols = CROP.y1 - CROP.y0,
+      rows = CROP.z1 - CROP.z0;
     c.width = cols * s;
     c.height = rows * s;
     const ctx = c.getContext("2d");
@@ -101,7 +111,9 @@ export default function BrainCards({ items, deep = false }) {
   const [data, setData] = useState(null);
   useEffect(() => {
     let live = true;
-    loadBrainData().then((d) => live && setData(d)).catch(() => {});
+    loadBrainData()
+      .then((d) => live && setData(d))
+      .catch(() => {});
     return () => {
       live = false;
     };

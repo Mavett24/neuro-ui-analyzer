@@ -36,7 +36,13 @@ function ago(t) {
   return new Date(t).toLocaleDateString();
 }
 const stamp = (t) =>
-  new Date(t).toLocaleString(undefined, { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  new Date(t).toLocaleString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
 function ctaLine(s) {
   if (!s.hasCta) return "no CTA found";
@@ -142,7 +148,9 @@ export default function History() {
         ) : items.length === 0 ? (
           <div className="hist-empty">
             <span className="up-glyph" aria-hidden="true">
-              {GLYPH.flatMap((row, y) => row.split("").map((c, x) => <i key={`${x}${y}`} className={c === "#" ? "on" : ""} />))}
+              {GLYPH.flatMap((row, y) =>
+                row.split("").map((c, x) => <i key={`${x}${y}`} className={c === "#" ? "on" : ""} />)
+              )}
             </span>
             <h2>No analyses yet</h2>
             <p>Every design you analyze lands here, so you can reopen it or compare versions later.</p>
@@ -157,7 +165,11 @@ export default function History() {
               return (
                 <li key={it.id} className="diag hist-card">
                   <div className="diag-head">
-                    <time className="diag-label" dateTime={new Date(it.updatedAt).toISOString()} title={stamp(it.updatedAt)}>
+                    <time
+                      className="diag-label"
+                      dateTime={new Date(it.updatedAt).toISOString()}
+                      title={stamp(it.updatedAt)}
+                    >
                       {ago(it.updatedAt)}
                     </time>
                     {it.deep && <span className="chip info">Deep analysis</span>}
@@ -190,7 +202,12 @@ export default function History() {
                       <dd>{ctaLine(s)}</dd>
                     </div>
                   </dl>
-                  <button type="button" className="ghost hist-del" onClick={() => remove(it.id)} aria-label={`Delete ${it.name}`}>
+                  <button
+                    type="button"
+                    className="ghost hist-del"
+                    onClick={() => remove(it.id)}
+                    aria-label={`Delete ${it.name}`}
+                  >
                     Delete
                   </button>
                 </li>

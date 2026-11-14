@@ -2,11 +2,12 @@ import { describe, expect, it } from "vitest";
 import { computeScanpath } from "../lib/scanpath";
 import { saliency } from "./fixtures";
 
-const map = () => saliency(64, 40, [
-  [0.2, 0.3, 1],
-  [0.7, 0.6, 0.8],
-  [0.5, 0.8, 0.5],
-]);
+const map = () =>
+  saliency(64, 40, [
+    [0.2, 0.3, 1],
+    [0.7, 0.6, 0.8],
+    [0.5, 0.8, 0.5],
+  ]);
 
 describe("predicted scanpath", () => {
   it("lands the first fixation on the most salient spot", () => {
@@ -18,7 +19,8 @@ describe("predicted scanpath", () => {
   it("moves on after each fixation (inhibition of return)", () => {
     const { fixations } = computeScanpath(map());
     for (let i = 1; i < fixations.length; i++) {
-      const a = fixations[i - 1], b = fixations[i];
+      const a = fixations[i - 1],
+        b = fixations[i];
       expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(0.01);
     }
   });
@@ -43,6 +45,10 @@ describe("predicted scanpath", () => {
 
   it("is deterministic and handles an empty map", () => {
     expect(computeScanpath(map())).toEqual(computeScanpath(map()));
-    expect(computeScanpath({ w: 8, h: 8, map: new Float32Array(64) })).toEqual({ fixations: [], duration: 0, ctaHit: null });
+    expect(computeScanpath({ w: 8, h: 8, map: new Float32Array(64) })).toEqual({
+      fixations: [],
+      duration: 0,
+      ctaHit: null,
+    });
   });
 });

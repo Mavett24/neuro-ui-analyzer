@@ -14,7 +14,13 @@ export default function WireframeSkeleton({ src }) {
     const canvas = ref.current;
     const ctx = canvas.getContext("2d");
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let frame, last = 0, cols = 0, rows = 0, cell = 8, grid = null, dead = false;
+    let frame,
+      last = 0,
+      cols = 0,
+      rows = 0,
+      cell = 8,
+      grid = null,
+      dead = false;
 
     const img = new Image();
     img.onload = () => {

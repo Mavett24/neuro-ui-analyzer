@@ -150,7 +150,11 @@ export default function Landing() {
         name="Predicted attention"
         title="Attention, from real eye‑tracking"
         lead="A published gaze model, trained on where real people looked, predicts the first three seconds."
-        how={["Gaze model trained on human fixations", "Fixation map computed in your browser", "Scanpath from winner-take-all and inhibition of return"]}
+        how={[
+          "Gaze model trained on human fixations",
+          "Fixation map computed in your browser",
+          "Scanpath from winner-take-all and inhibition of return",
+        ]}
         assumes={[
           ["Free viewing", "no specific task in mind"],
           ["First 3 seconds", "before reading and intent take over"],
@@ -169,7 +173,11 @@ export default function Landing() {
         name="Layout heuristics"
         title="A layout check you can audit"
         lead="Six measures straight from the pixels. No AI, and the same numbers every time."
-        how={["Screen read in small blocks", "Blocks sorted into empty, detail and imagery", "Measures checked against published thresholds"]}
+        how={[
+          "Screen read in small blocks",
+          "Blocks sorted into empty, detail and imagery",
+          "Measures checked against published thresholds",
+        ]}
         assumes={[
           ["Filled buttons only", "ghost buttons and text links are skipped"],
           ["Context matters", "a splash screen is not a dashboard"],
@@ -188,7 +196,11 @@ export default function Landing() {
         name="Brain regions"
         title="Brain maps from 13,000 studies"
         lead="Real meta-analytic fMRI maps, weighted by what was measured in your design."
-        how={["One NeuroQuery map per function", "Weights from your measurements, formula shown", "Drawn on the ICBM152 surface, AAL region names"]}
+        how={[
+          "One NeuroQuery map per function",
+          "Weights from your measurements, formula shown",
+          "Drawn on the ICBM152 surface, AAL region names",
+        ]}
         assumes={[
           ["An estimate, not a scan", "no brain is recorded"],
           ["Population average", "where research places a function, not one person"],
@@ -205,7 +217,11 @@ export default function Landing() {
         name="Deep research analysis"
         title="A review that gives its reasons"
         lead="On request, a vision model reads the screen's content and names the principle behind each issue."
-        how={["Finds text, faces, objects, prices and actions", "Adds six content-based brain functions", "Cites Hick's law, Fitts's law, Gestalt and hierarchy"]}
+        how={[
+          "Finds text, faces, objects, prices and actions",
+          "Adds six content-based brain functions",
+          "Cites Hick's law, Fitts's law, Gestalt and hierarchy",
+        ]}
         assumes={[
           ["Opt-in, cloud", "sent to Gemini, so skip confidential work"],
           ["Models misread", "the measured numbers stay the evidence"],
@@ -223,7 +239,9 @@ export default function Landing() {
           <div className="lp-cta-copy">
             <p className="eyebrow">Early access</p>
             <h2>Be first in when it fully opens</h2>
-            <p className="sub">The beta runs the whole flow today. Leave your email to hear when the full version is ready.</p>
+            <p className="sub">
+              The beta runs the whole flow today. Leave your email to hear when the full version is ready.
+            </p>
           </div>
           <Waitlist />
         </div>

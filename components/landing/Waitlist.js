@@ -52,7 +52,9 @@ export default function Waitlist() {
           aria-describedby="wl-help"
         />
         <button type="submit" className="pill lp-press" disabled={state === "sending"}>
-          <span className={state === "sending" ? "sending" : ""}>{state === "sending" ? "Joining" : "Join the waitlist"}</span>
+          <span className={state === "sending" ? "sending" : ""}>
+            {state === "sending" ? "Joining" : "Join the waitlist"}
+          </span>
         </button>
       </div>
       <p id="wl-help" className={error ? "wl-error" : "wl-help"}>

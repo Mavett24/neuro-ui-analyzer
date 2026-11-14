@@ -164,7 +164,6 @@ export async function POST(req) {
     if (![404, 429, 500, 503].includes(res.status)) break;
   }
 
-  const hint =
-    last.status === 429 ? " Free tier quota reached. Wait a minute or try again tomorrow." : "";
+  const hint = last.status === 429 ? " Free tier quota reached. Wait a minute or try again tomorrow." : "";
   return Response.json({ error: `Gemini API: ${last.message}${hint}` }, { status: last.status });
 }

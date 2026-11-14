@@ -107,7 +107,10 @@ export default function FlowDemo() {
                 <i
                   key={`${i}-${run}`}
                   className={i === active ? "running" : ""}
-                  style={{ animationDuration: `${STEP_MS}ms`, animationPlayState: playing && i === active ? "running" : "paused" }}
+                  style={{
+                    animationDuration: `${STEP_MS}ms`,
+                    animationPlayState: playing && i === active ? "running" : "paused",
+                  }}
                   onAnimationEnd={() => i === active && go((active + 1) % STEPS.length)}
                 />
               </span>
@@ -165,10 +168,18 @@ function UploadViz() {
           <i />
         </div>
         <ul>
-          <li><span>file</span>payloom-landing.png</li>
-          <li><span>size</span>1440 × 720 px</li>
-          <li><span>format</span>desktop, wide</li>
-          <li><span>hash</span>sha-256 a91f…e07c</li>
+          <li>
+            <span>file</span>payloom-landing.png
+          </li>
+          <li>
+            <span>size</span>1440 × 720 px
+          </li>
+          <li>
+            <span>format</span>desktop, wide
+          </li>
+          <li>
+            <span>hash</span>sha-256 a91f…e07c
+          </li>
         </ul>
       </div>
     </div>
@@ -213,7 +224,12 @@ function HeatViz({ sample }) {
         {cta && (
           <span
             className="v-cta"
-            style={{ left: `${cta.x * 100}%`, top: `${cta.y * 100}%`, width: `${cta.w * 100}%`, height: `${cta.h * 100}%` }}
+            style={{
+              left: `${cta.x * 100}%`,
+              top: `${cta.y * 100}%`,
+              width: `${cta.w * 100}%`,
+              height: `${cta.h * 100}%`,
+            }}
           >
             <b>CTA seen at {(sample.ctaHit.start / 1000).toFixed(1)}s</b>
           </span>
@@ -281,16 +297,38 @@ function CheckViz({ sample }) {
   const rows = [
     { label: "White space", to: Math.round(s.whitespace), unit: "% empty", status: "good", fill: s.whitespace / 100 },
     { label: "Visual clutter", to: s.clutter, unit: "of 100", status: "info", fill: s.clutter / 100 },
-    { label: "Colour palette", to: s.hues, unit: `hue family, ${s.neutrals} neutral`, status: "good", fill: s.hues / 6 },
-    { label: "Primary CTA contrast", to: s.cta.contrast, decimals: 2, unit: ": 1, needs 3", status: "good", fill: s.cta.contrast / 7 },
-    { label: "Attention on CTA", to: Math.round(sample.ctaHit.value * 100), unit: "% of peak", status: "info", fill: sample.ctaHit.value },
+    {
+      label: "Colour palette",
+      to: s.hues,
+      unit: `hue family, ${s.neutrals} neutral`,
+      status: "good",
+      fill: s.hues / 6,
+    },
+    {
+      label: "Primary CTA contrast",
+      to: s.cta.contrast,
+      decimals: 2,
+      unit: ": 1, needs 3",
+      status: "good",
+      fill: s.cta.contrast / 7,
+    },
+    {
+      label: "Attention on CTA",
+      to: Math.round(sample.ctaHit.value * 100),
+      unit: "% of peak",
+      status: "info",
+      fill: sample.ctaHit.value,
+    },
   ];
   const ok = rows.filter((r) => r.status === "good").length;
   return (
     <div className={`v-check ${lit ? "lit" : ""}`}>
       <div className="c-score">
         <div>
-          <span className="c-big">{ok}<small>/{rows.length}</small></span>
+          <span className="c-big">
+            {ok}
+            <small>/{rows.length}</small>
+          </span>
           <span className="c-cap">measures pass</span>
         </div>
         <p>
@@ -341,9 +379,18 @@ function BrainViz() {
 }
 
 const REVIEW = [
-  ["verdict", "The headline wins the first fixation, but **the primary button is only reached at 1.7s**, after three stops in the hero copy."],
-  ["issue", "**Hero CTA** sits below the reading line and shares its tone with the secondary link, so visual hierarchy does not single it out."],
-  ["issue", "**Logo strip** competes with the subhead for the second fixation. Gestalt proximity groups it with the hero."],
+  [
+    "verdict",
+    "The headline wins the first fixation, but **the primary button is only reached at 1.7s**, after three stops in the hero copy.",
+  ],
+  [
+    "issue",
+    "**Hero CTA** sits below the reading line and shares its tone with the secondary link, so visual hierarchy does not single it out.",
+  ],
+  [
+    "issue",
+    "**Logo strip** competes with the subhead for the second fixation. Gestalt proximity groups it with the hero.",
+  ],
   ["change", "**Raise the button** into the first screen third and give it the only filled accent on the page."],
 ];
 const DEEP = [
@@ -414,7 +461,9 @@ function DeepViz() {
           );
         })}
       </div>
-      <p className="v-note">Example output on the sample page. Principles named: visual hierarchy, Gestalt proximity.</p>
+      <p className="v-note">
+        Example output on the sample page. Principles named: visual hierarchy, Gestalt proximity.
+      </p>
     </div>
   );
 }

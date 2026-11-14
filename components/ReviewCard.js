@@ -51,7 +51,9 @@ function Dither() {
   const ref = useRef(null);
   useEffect(() => {
     const c = ref.current;
-    const cell = 6, cols = 56, rows = 22;
+    const cell = 6,
+      cols = 56,
+      rows = 22;
     c.width = cols * cell;
     c.height = rows * cell;
     const ctx = c.getContext("2d");
@@ -98,7 +100,13 @@ export default function ReviewCard({ review, busy, elapsed }) {
                 {busy && !last && <span className="caret" />}
               </p>
             ) : (
-              !structured && <div className="md">{items(extra.flatMap((s) => s.lines)).map((l, i) => <p key={i}>{inline(l)}</p>)}</div>
+              !structured && (
+                <div className="md">
+                  {items(extra.flatMap((s) => s.lines)).map((l, i) => (
+                    <p key={i}>{inline(l)}</p>
+                  ))}
+                </div>
+              )
             )}
             {cols.some((c) => c.section) && (
               <div className="review-cols">
@@ -131,7 +139,9 @@ export default function ReviewCard({ review, busy, elapsed }) {
               extra.map((s, i) => (
                 <div key={i} className="md">
                   {s.title && <h3>{s.title}</h3>}
-                  {items(s.lines).map((l, j) => <p key={j}>{inline(l)}</p>)}
+                  {items(s.lines).map((l, j) => (
+                    <p key={j}>{inline(l)}</p>
+                  ))}
                 </div>
               ))}
           </>

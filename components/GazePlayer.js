@@ -10,10 +10,17 @@ import { revealMask, traceAt, TRACE_ROWS, TYPE_LABEL } from "../lib/scanpath";
 // which functions each moment is likely to recruit. Plays once when it scrolls into view.
 const WINDOW = 3000;
 const BIN = 100;
-const RAMP = [[140, 0, 5], [242, 26, 5], [255, 133, 10], [255, 224, 64], [255, 250, 209]];
+const RAMP = [
+  [140, 0, 5],
+  [242, 26, 5],
+  [255, 133, 10],
+  [255, 224, 64],
+  [255, 250, 209],
+];
 const ramp = (t) => {
   const p = Math.max(0, Math.min(0.9999, t)) * (RAMP.length - 1);
-  const i = Math.floor(p), f = p - i;
+  const i = Math.floor(p),
+    f = p - i;
   return `rgb(${RAMP[i].map((c, k) => Math.round(c + (RAMP[i + 1][k] - c) * f)).join(",")})`;
 };
 const secs = (ms) => (ms / 1000).toFixed(2) + "s";
@@ -65,7 +72,8 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
   }, [t]);
   useEffect(() => {
     if (!playing) return;
-    let frame, last = performance.now();
+    let frame,
+      last = performance.now();
     const tick = (now) => {
       const dt = Math.min(50, now - last);
       last = now;
@@ -121,7 +129,12 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
   if (current && t < current.start && current.i > 0) {
     const a = fx[current.i - 1];
     const k = (t - (current.start - current.saccade)) / current.saccade;
-    jump = { x1: a.x * 1000, y1: a.y * H, x2: (a.x + (current.x - a.x) * k) * 1000, y2: (a.y + (current.y - a.y) * k) * H };
+    jump = {
+      x1: a.x * 1000,
+      y1: a.y * H,
+      x2: (a.x + (current.x - a.x) * k) * 1000,
+      y2: (a.y + (current.y - a.y) * k) * H,
+    };
   }
 
   return (
@@ -167,7 +180,12 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
           {cta && (
             <span
               className="cta-box"
-              style={{ left: `${cta.box.x * 100}%`, top: `${cta.box.y * 100}%`, width: `${cta.box.w * 100}%`, height: `${cta.box.h * 100}%` }}
+              style={{
+                left: `${cta.box.x * 100}%`,
+                top: `${cta.box.y * 100}%`,
+                width: `${cta.box.w * 100}%`,
+                height: `${cta.box.h * 100}%`,
+              }}
             >
               <b>CTA {cta.confidencePct}%</b>
             </span>
@@ -177,7 +195,12 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
       </div>
 
       <div className="player">
-        <button type="button" className="play" onClick={toggle} aria-label={playing ? "Pause" : t >= end ? "Replay" : "Play"}>
+        <button
+          type="button"
+          className="play"
+          onClick={toggle}
+          aria-label={playing ? "Pause" : t >= end ? "Replay" : "Play"}
+        >
           <b className={playing ? "pause" : t >= end ? "replay" : "start"} aria-hidden="true" />
           {playing ? "Pause" : t >= end ? "Replay" : "Play"}
         </button>
@@ -221,7 +244,10 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
           <h4>Fixation sequence</h4>
           <ol>
             {fx.map((f) => (
-              <li key={f.i} className={`${current === f && t < end ? "now" : ""} ${t < f.start && t < end ? "later" : ""}`}>
+              <li
+                key={f.i}
+                className={`${current === f && t < end ? "now" : ""} ${t < f.start && t < end ? "later" : ""}`}
+              >
                 <button type="button" onClick={() => seek(f.start)}>
                   <span className="n">{String(f.i + 1).padStart(2, "0")}</span>
                   <span className="what">
@@ -248,7 +274,11 @@ export default function GazePlayer({ preview, saliency, path, heat, cta }) {
                     <i
                       key={b}
                       className={b === nowBin && t < end && started ? "cur" : ""}
-                      style={b * BIN < t && v > 0.05 ? { background: ramp(0.1 + 0.85 * v), opacity: 0.35 + 0.65 * v } : undefined}
+                      style={
+                        b * BIN < t && v > 0.05
+                          ? { background: ramp(0.1 + 0.85 * v), opacity: 0.35 + 0.65 * v }
+                          : undefined
+                      }
                     />
                   ))}
                 </div>
