@@ -47,6 +47,24 @@ export function monochromePage() {
   return page;
 }
 
+// Dark portfolio-style page: a white pill in the nav and an orange hero button with a thin,
+// antialiased label (strokes partly blended into the fill, as in a downscaled screenshot).
+export function darkPageWithTwoButtons() {
+  const page = canvas(1024, 506, [8, 8, 10]);
+  page.text(24, 14, 90, 1, 7, [230, 230, 230]); // logo
+  page.text(560, 14, 180, 1, 6, [220, 220, 220]); // nav links
+  page.rect(765, 7, 53, 16, [253, 253, 253]); // nav pill
+  page.text(772, 11, 38, 1, 7, [12, 12, 12]); // its label
+  page.text(36, 150, 300, 2, 22, [235, 235, 235]); // headline
+  page.text(36, 240, 260, 3, 6, [150, 150, 150]); // paragraph
+  page.rect(236, 313, 106, 20, [230, 80, 31]); // hero button
+  for (let x = 246; x < 330; x += 4) {
+    page.rect(x, 319, 1, 8, [255, 255, 255]); // stroke core
+    page.rect(x + 1, 319, 1, 8, [242, 167, 143]); // antialiased edge
+  }
+  return page;
+}
+
 // A saliency map with Gaussian blobs at the given (x, y, strength) points, in 0..1 coordinates.
 export function saliency(w, h, blobs) {
   const map = new Float32Array(w * h);
