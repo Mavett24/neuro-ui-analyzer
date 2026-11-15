@@ -85,7 +85,7 @@ npm run dev
 
 Open http://localhost:3000. The landing page is at `/` and the analyzer at `/app`.
 
-Everything except the deep research analysis works without any setup. To enable it, copy `.env.example` to `.env.local` and add a free key from [Mistral](https://console.mistral.ai/api-keys):
+Everything except the deep research analysis works without any setup. To enable it, copy `.env.example` to `.env.local` and add a key from [Mistral](https://console.mistral.ai/api-keys) (pay-as-you-go, fractions of a cent per analysis):
 
 ```bash
 MISTRAL_API_KEY=your-key
