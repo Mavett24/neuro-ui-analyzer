@@ -54,8 +54,8 @@ export default function Privacy() {
           <h2>Who is responsible</h2>
           <p>
             Neuro UI Analyzer is a personal project by Matteo Favetta, based in The Hague, the Netherlands. I am the
-            controller for the personal data described here. You can reach me through{" "}
-            <a href="https://matteofavetta.com">matteofavetta.com</a>.
+            controller for the personal data described here. You can reach me at{" "}
+            <a href="mailto:mmfavetta@gmail.com">mmfavetta@gmail.com</a>.
           </p>
         </section>
 
