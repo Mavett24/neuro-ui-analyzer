@@ -3,7 +3,6 @@ import "./landing/landing.css";
 import Hero from "../components/landing/Hero";
 import FlowDemo from "../components/landing/FlowDemo";
 import Reveal from "../components/landing/Reveal";
-import Waitlist from "../components/landing/Waitlist";
 import Cursor from "../components/landing/Cursor";
 import PixelDivider from "../components/landing/PixelDivider";
 import PixelIcon from "../components/landing/PixelIcon";
@@ -16,7 +15,7 @@ import PrivacyLinks from "../components/PrivacyLinks";
 export const metadata = {
   title: "Neuro UI Analyzer: predict how people see your interface",
   description:
-    "Predicted attention from an eye-tracking-trained gaze model, an auditable layout check and brain maps from about 13,000 fMRI studies. Private beta.",
+    "Predicted attention from an eye-tracking-trained gaze model, an auditable layout check and brain maps from about 13,000 fMRI studies. Free to use.",
 };
 
 const VOID = "#000000";
@@ -87,11 +86,8 @@ export default function Landing() {
           <a href="#metrics">Metrics</a>
         </div>
         <div className="nav-links">
-          <a className="chip" href="/app">
-            Try the beta
-          </a>
-          <a className="lp-nav-cta lp-press" href="#waitlist">
-            Early access
+          <a className="lp-nav-cta lp-press" href="/app">
+            Open the analyzer
           </a>
         </div>
       </nav>
@@ -224,10 +220,10 @@ export default function Landing() {
           "Cites Hick's law, Fitts's law, Gestalt and hierarchy",
         ]}
         assumes={[
-          ["Opt-in, cloud", "sent to Gemini, so skip confidential work"],
+          ["Opt-in, cloud", "sent to Mistral (EU), skip personal data"],
           ["Models misread", "the measured numbers stay the evidence"],
         ]}
-        source="Hick 1952 · Fitts 1954 · Gemini API"
+        source="Hick 1952 · Fitts 1954 · Mistral API"
         tone="ground"
         flip
       >
@@ -235,16 +231,23 @@ export default function Landing() {
       </Metric>
       <PixelDivider from={GROUND} to={VOID} />
 
-      <footer className="lp-foot" id="waitlist">
+      <footer className="lp-foot" id="try">
         <div className="lp-cta">
           <div className="lp-cta-copy">
-            <p className="eyebrow">Early access</p>
-            <h2>Be first in when it fully opens</h2>
+            <p className="eyebrow">Free to use</p>
+            <h2>See it on a real page</h2>
             <p className="sub">
-              The beta runs the whole flow today. Leave your email to hear when the full version is ready.
+              Run the full report on a sample landing page in a few seconds, or drop in a screenshot of your own.
             </p>
           </div>
-          <Waitlist />
+          <div className="lp-cta-actions">
+            <a className="pill lp-press" href="/app?src=/demo/sample.jpg">
+              Try it with a sample
+            </a>
+            <a className="lp-ghost lp-press" href="/app">
+              Upload your own
+            </a>
+          </div>
         </div>
         <div className="lp-foot-bar">
           <Link className="brand" href="/">
@@ -256,7 +259,7 @@ export default function Landing() {
             Neuro UI Analyzer
           </Link>
           <nav aria-label="Footer">
-            <a href="/app">Try the beta</a>
+            <a href="/app">Analyzer</a>
             <a href="/brain">Brain demo</a>
             <a href="#metrics">Metrics</a>
             <a href="https://matteofavetta.com">matteofavetta.com</a>

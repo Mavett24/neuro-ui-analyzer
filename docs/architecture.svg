@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 700" width="1280" height="700" role="img" aria-labelledby="t d">
   <title id="t">Neuro UI Analyzer architecture</title>
-  <desc id="d">A screenshot is decoded in the browser and runs through three on-device stages: layout heuristics, a gaze model and brain weighting. Results are shown as a report and saved to IndexedDB. An optional deep analysis sends a downscaled copy to two server routes that call the Gemini API.</desc>
+  <desc id="d">A screenshot is decoded in the browser and runs through three on-device stages: layout heuristics, a gaze model and brain weighting. Results are shown as a report and saved to IndexedDB. An optional deep analysis sends a downscaled copy to two server routes that call the Mistral API.</desc>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 10 5 0 10z" fill="#859984"/>
@@ -110,7 +110,7 @@
   <text class="t f" x="1064" y="308">streamed written review</text>
 
   <rect class="key" x="1048" y="400" width="176" height="96" rx="10"/>
-  <text class="t h" x="1064" y="432">Gemini API</text>
+  <text class="t h" x="1064" y="432">Mistral API</text>
   <text class="t s" x="1064" y="456">free tier, key kept</text>
   <text class="t s" x="1064" y="475">on the server</text>
   <path class="ln" d="M1224 210 H 1234 V 448 H 1226" marker-end="url(#a)"/>

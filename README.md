@@ -51,7 +51,7 @@ An optional **deep research analysis** sends a downscaled copy to a vision model
 ## How it works
 
 <p align="center">
-  <img src="docs/architecture.svg" alt="Architecture: decode, layout heuristics, gaze model and brain weighting run in the browser; the deep analysis is an opt-in server call to Gemini" width="100%">
+  <img src="docs/architecture.svg" alt="Architecture: decode, layout heuristics, gaze model and brain weighting run in the browser; the deep analysis is an opt-in server call to Mistral" width="100%">
 </p>
 
 1. **Decode.** The screenshot is decoded and downscaled in halving steps, because a single large resize blurs thin text and shifts predicted attention off headlines.
@@ -69,7 +69,7 @@ The full method, with every formula and threshold, is in [docs/METHOD.md](docs/M
 | In-browser ML | ONNX Runtime Web (WASM) running UNISAL |
 | 3D and imaging | three.js for the cortical surface, Niivue for MRI slices |
 | Storage | IndexedDB, keyed by a SHA-256 of the image |
-| AI review | Gemini API through server routes, streamed |
+| AI review | Mistral API through server routes, streamed |
 | Quality | Vitest, ESLint (`next/core-web-vitals`), Prettier, GitHub Actions |
 
 ## Getting started
@@ -85,10 +85,10 @@ npm run dev
 
 Open http://localhost:3000. The landing page is at `/` and the analyzer at `/app`.
 
-Everything except the deep research analysis works without any setup. To enable it, copy `.env.example` to `.env.local` and add a free key from [Google AI Studio](https://aistudio.google.com/apikey):
+Everything except the deep research analysis works without any setup. To enable it, copy `.env.example` to `.env.local` and add a free key from [Mistral](https://console.mistral.ai/api-keys):
 
 ```bash
-GEMINI_API_KEY=your-key
+MISTRAL_API_KEY=your-key
 ```
 
 | Script | What it does |
@@ -102,7 +102,7 @@ GEMINI_API_KEY=your-key
 
 ### Deploy
 
-Import the repository in Vercel and add `GEMINI_API_KEY` under Project Settings, Environment Variables. No other configuration is needed.
+Import the repository in Vercel and add `MISTRAL_API_KEY` under Project Settings, Environment Variables. No other configuration is needed.
 
 ## Testing
 
@@ -118,7 +118,7 @@ CI runs lint, the format check, tests and a production build on every push and p
 
 ## Privacy
 
-The gaze model, layout analysis, brain maps and history all run in the browser. Screenshots never leave the device unless the user starts a deep research analysis, which sends a downscaled JPEG to the Gemini API. The UI warns against using it on confidential work, because free tier requests may be used to improve Google's products.
+The gaze model, layout analysis, brain maps and history all run in the browser. Screenshots never leave the device unless the user starts a deep research analysis, which sends a downscaled JPEG to the Mistral API. Mistral AI is based in France and hosts API data in the EU by default, and the project's account is opted out of model training.
 
 ## Assumptions and limits
 

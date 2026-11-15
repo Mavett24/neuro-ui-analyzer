@@ -1,6 +1,6 @@
 # Architecture
 
-Neuro UI Analyzer is a Next.js app where almost everything runs in the browser. The server holds one secret, the Gemini API key, and is only involved when the user asks for the deep research analysis.
+Neuro UI Analyzer is a Next.js app where almost everything runs in the browser. The server holds one secret, the Mistral API key, and is only involved when the user asks for the deep research analysis.
 
 ![Architecture diagram](architecture.svg)
 
@@ -16,7 +16,7 @@ sequenceDiagram
     participant B as lib/brain
     participant DB as IndexedDB
     participant API as /api/features, /api/review
-    participant G as Gemini API
+    participant G as Mistral API
 
     U->>P: drop, paste or pick a screenshot
     P->>P: SHA-256 of the file bytes
@@ -48,8 +48,8 @@ sequenceDiagram
 | `app/page.js` | Landing page | Server-rendered, static |
 | `app/app/page.js` | Analyzer: upload, report, section nav, deep analysis | Client |
 | `app/history/page.js` | Saved analyses | Client |
-| `app/api/features/route.js` | Content detection through Gemini, returned as numbers | Server |
-| `app/api/review/route.js` | Written review through Gemini, streamed as plain text | Server |
+| `app/api/features/route.js` | Content detection through Mistral, returned as numbers | Server |
+| `app/api/review/route.js` | Written review through Mistral, streamed as plain text | Server |
 | `lib/heuristics.js` | Analysis entry point and the pixel metrics | Browser, pure core |
 | `lib/cta.js` | Filled-button detection with a confidence score | Pure |
 | `lib/saliency.js` | UNISAL inference, contrast fallback, heatmap drawing | Browser |
@@ -94,4 +94,4 @@ All assets are fetched lazily, only when a page needs them, and cached by the br
 - The first analysis downloads the model and runtime, so it's slow on a weak connection.
 - Very tall screenshots are capped at 1024 px high for the gaze model.
 - History lives in one browser. Clearing site data removes it, and nothing syncs across devices.
-- The Gemini free tier has low daily quotas, which is fine for personal use but not for a public launch.
+- The Mistral free tier allows about one request per second, so analyses from many visitors at once can queue or fail.

@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-The deep research analysis needs a `GEMINI_API_KEY` in `.env.local` (see `.env.example`). Everything else works without one.
+The deep research analysis needs a `MISTRAL_API_KEY` in `.env.local` (see `.env.example`). Everything else works without one.
 
 ## Before you open a pull request
 
