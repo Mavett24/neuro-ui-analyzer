@@ -2,6 +2,8 @@
 // To swap provider later, only this file changes.
 // The answer is streamed back as plain text so the review appears as it is written.
 
+import { clientIp, rateLimit, tooManyRequests } from "../../../lib/rateLimit";
+
 const MODELS = [
   process.env.GEMINI_MODEL,
   // Flash-Lite first: on the free tier it answers in a couple of seconds,
@@ -94,6 +96,9 @@ function textStream(upstream) {
 }
 
 export async function POST(req) {
+  const wait = rateLimit(`review:${clientIp(req)}`);
+  if (wait) return tooManyRequests(wait);
+
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
     return Response.json(

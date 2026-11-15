@@ -1,6 +1,8 @@
 // Content detection: the vision model reports what is in the design as plain numbers.
 // It does not decide anything about the brain. lib/brain.js maps these numbers to the maps.
 
+import { clientIp, rateLimit, tooManyRequests } from "../../../lib/rateLimit";
+
 const MODELS = [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash"].filter(
   Boolean
 );
@@ -18,6 +20,9 @@ const PROMPT = `Look at this UI screenshot and report what it contains. Return o
 const num = (v, max) => Math.max(0, Math.min(max, Number(v) || 0));
 
 export async function POST(req) {
+  const wait = rateLimit(`features:${clientIp(req)}`);
+  if (wait) return tooManyRequests(wait);
+
   const key = process.env.GEMINI_API_KEY;
   if (!key) return Response.json({ error: "No GEMINI_API_KEY set." }, { status: 500 });
 
