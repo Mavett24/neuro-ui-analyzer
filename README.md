@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/screenshots/banner.webp" alt="Neuro UI Analyzer: know what the brain sees first" width="100%">
+  <img src="docs/screenshots/banner.webp" alt="The Neuro UI Analyzer homepage: know what the brain sees first, with a pixel brain highlighting attention regions" width="100%">
 </p>
 
 <h1 align="center">Neuro UI Analyzer</h1>
