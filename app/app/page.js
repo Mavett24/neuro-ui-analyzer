@@ -15,6 +15,7 @@ import PixelField from "../../components/PixelField";
 import MetricCard, { useCompact } from "../../components/MetricCard";
 import { getAnalysis, listAnalyses, patchAnalysis, saveAnalysis } from "../../lib/history";
 import { AttentionViz, BalanceViz, ClutterViz, ColourViz, ContrastViz, WhitespaceViz } from "../../components/DiagViz";
+import PrivacyLinks from "../../components/PrivacyLinks";
 
 const SECTIONS = [
   ["attention", "Attention"],
@@ -600,6 +601,7 @@ export default function Analyzer() {
           Estimates for design exploration, not measurements of real users. Gaze model: UNISAL (Droste et al., 2020,
           Apache 2.0). Brain maps: NeuroQuery (Dockes et al., 2020). Region names: AAL atlas (Tzourio-Mazoyer et al.,
           2002).
+          <PrivacyLinks />
         </footer>
       </main>
     </>

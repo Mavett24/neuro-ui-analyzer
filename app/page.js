@@ -11,6 +11,7 @@ import PixelGaze from "../components/landing/PixelGaze";
 import PixelBlocks from "../components/landing/PixelBlocks";
 import BrainMaps from "../components/landing/BrainMaps";
 import PixelDetect from "../components/landing/PixelDetect";
+import PrivacyLinks from "../components/PrivacyLinks";
 
 export const metadata = {
   title: "Neuro UI Analyzer: predict how people see your interface",
@@ -259,6 +260,7 @@ export default function Landing() {
             <a href="/brain">Brain demo</a>
             <a href="#metrics">Metrics</a>
             <a href="https://matteofavetta.com">matteofavetta.com</a>
+            <PrivacyLinks className="lp-privacy" />
           </nav>
         </div>
         <p className="lp-credits">

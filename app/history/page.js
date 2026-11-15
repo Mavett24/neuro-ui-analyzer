@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { clearHistory, deleteAnalysis, listAnalyses } from "../../lib/history";
+import PrivacyLinks from "../../components/PrivacyLinks";
 
 // Every design analyzed in this browser, newest first. Opening one restores the saved report
 // instantly; nothing is recomputed and nothing is fetched.
@@ -218,6 +219,7 @@ export default function History() {
 
         <footer className="foot">
           History uses your browser&apos;s local storage (IndexedDB). Clearing site data in your browser removes it too.
+          <PrivacyLinks />
         </footer>
       </main>
     </>

@@ -1,6 +1,7 @@
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
 import "./globals.css";
+import Consent from "../components/Consent";
 
 const description = "Predicted gaze, an auditable layout check and fMRI-based brain maps for any UI screenshot.";
 
@@ -34,7 +35,10 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Consent />
+      </body>
     </html>
   );
 }
