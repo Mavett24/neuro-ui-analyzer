@@ -1,0 +1,1 @@
+Neuro UI Analyzer: know what the brain sees first. Predicted gaze, a layout check and fMRI-based brain maps for any UI screenshot.
