@@ -73,12 +73,12 @@ The displayed map is the weighted sum of the term maps. Its colour scale tops ou
 
 ## 4. Deep research analysis (opt-in)
 
-Two server routes call the Gemini API with a downscaled JPEG (longest side 1024 px) plus the measured metrics.
+Two server routes call the Mistral API with a downscaled JPEG (longest side 1024 px) plus the measured metrics.
 
 - `/api/features` returns content as plain numbers (text amount, faces, imagery shares, reward cues, choices). The model never decides anything about the brain: `lib/brain.js` maps those numbers to weights.
 - `/api/review` streams a written review. It is told to treat the metrics as evidence, name the principle behind each issue (Hick's law, Fitts's law, Gestalt, hierarchy) and say when the image contradicts a metric.
 
-Models are tried in order: Flash-Lite first, because on the free tier it answers in seconds. A model that sends nothing within 12 seconds is skipped.
+Models are tried in order: Mistral Small first, because it answers in seconds, then Mistral Medium. A model that sends nothing within 12 seconds is skipped.
 
 **Assumes:** vision models misread screens sometimes. The measured numbers stay the evidence.
 

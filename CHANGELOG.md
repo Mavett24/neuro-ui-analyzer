@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The deep research analysis now runs on Mistral (EU-based) instead of Gemini, whose free tier can't be offered to users in the EEA.
+
 ## [0.1.0] - 2026-11-14
 
 First working beta.

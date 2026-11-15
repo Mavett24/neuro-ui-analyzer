@@ -2,10 +2,9 @@
 // It does not decide anything about the brain. lib/brain.js maps these numbers to the maps.
 
 import { clientIp, rateLimit, tooManyRequests } from "../../../lib/rateLimit";
+import { MODELS, RETRY_STATUSES, apiKey, callMistral, errorMessage, textOf, userContent } from "../../../lib/mistral";
 
-const MODELS = [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash"].filter(
-  Boolean
-);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const PROMPT = `Look at this UI screenshot and report what it contains. Return only JSON with exactly these keys:
 {
@@ -23,39 +22,36 @@ export async function POST(req) {
   const wait = rateLimit(`features:${clientIp(req)}`);
   if (wait) return tooManyRequests(wait);
 
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return Response.json({ error: "No GEMINI_API_KEY set." }, { status: 500 });
+  const key = apiKey();
+  if (!key) return Response.json({ error: "No MISTRAL_API_KEY set." }, { status: 500 });
 
   const { imageBase64 } = await req.json().catch(() => ({}));
   if (!imageBase64 || imageBase64.length > 4_000_000) {
     return Response.json({ error: "Missing or oversized image." }, { status: 400 });
   }
 
-  const payload = {
-    contents: [
-      { role: "user", parts: [{ inlineData: { mimeType: "image/jpeg", data: imageBase64 } }, { text: PROMPT }] },
-    ],
-    generationConfig: { temperature: 0, maxOutputTokens: 1024, responseMimeType: "application/json" },
+  const body = {
+    messages: [{ role: "user", content: userContent(imageBase64, PROMPT) }],
+    temperature: 0,
+    max_tokens: 400,
+    response_format: { type: "json_object" },
   };
 
+  // This route runs alongside the review, and the free tier allows about one request per second,
+  // so a rate-limited first attempt waits a moment and tries the same model once more.
+  const attempts = [MODELS[0], MODELS[0], ...MODELS.slice(1)];
   let last = "No model responded.";
-  for (const model of MODELS) {
+  for (const [i, model] of attempts.entries()) {
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(12_000),
-      });
-      const json = await res.json().catch(() => ({}));
+      const res = await callMistral(key, { ...body, model }, AbortSignal.timeout(12_000));
       if (!res.ok) {
-        last = json.error?.message || res.statusText;
+        last = await errorMessage(res);
+        if (res.status === 429 && i === 0) await sleep(1200);
+        else if (!RETRY_STATUSES.includes(res.status)) break;
         continue;
       }
-      const text = (json.candidates?.[0]?.content?.parts || [])
-        .filter((p) => !p.thought)
-        .map((p) => p.text || "")
-        .join("");
+      const json = await res.json();
+      const text = textOf(json.choices?.[0]?.message?.content);
       const raw = JSON.parse(text.replace(/^```(?:json)?|```$/g, "").trim());
       return Response.json({
         model,

@@ -547,8 +547,8 @@ export default function Analyzer() {
                           changes.
                         </p>
                         <p className="hint">
-                          Sends a downscaled copy of the image to Google&apos;s Gemini API (free tier). Don&apos;t use
-                          it on confidential designs: free tier requests may be used to improve Google products.
+                          Sends a downscaled copy of the image to Mistral AI (an EU company, not used for training).
+                          Avoid screenshots with personal data.
                         </p>
                       </div>
                       <button className="pill" onClick={() => getReview()}>

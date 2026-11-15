@@ -41,7 +41,7 @@ export default function Privacy() {
               The gaze model, layout check, brain maps and history run in your browser. Your screenshot stays on your
               device.
             </li>
-            <li>Only the optional deep analysis sends a screenshot off your device, to Google&apos;s Gemini API.</li>
+            <li>Only the optional deep analysis sends a screenshot off your device, to Mistral AI in the EU.</li>
             <li>
               Anonymous page view statistics are collected only if you allow them. No cookies, no ads, no tracking
               across sites.
@@ -73,12 +73,11 @@ export default function Privacy() {
           <h3>Deep analysis (optional)</h3>
           <p>
             When you start a deep analysis, a downscaled copy of your screenshot and the measured layout numbers are
-            sent through this site&apos;s server to Google&apos;s Gemini API, which writes the review and reports what
-            the design contains. Nothing is stored on this site&apos;s server. The project uses Gemini&apos;s free tier,
-            under which Google may use submitted content and responses to improve its products, and human reviewers may
-            read it. Google may process the data outside the EU. Don&apos;t analyze screenshots that contain personal,
-            confidential or unreleased information. Legal basis: providing the analysis you asked for (Art. 6(1)(b)
-            GDPR).
+            sent through this site&apos;s server to Mistral AI (Paris, France), which writes the review and reports what
+            the design contains. Nothing is stored on this site&apos;s server. Mistral hosts API data in the EU by
+            default, keeps it for up to 30 days to detect abuse, and this project has opted out of having it used to
+            train Mistral&apos;s models. Don&apos;t analyze screenshots that contain personal, confidential or
+            unreleased information. Legal basis: providing the analysis you asked for (Art. 6(1)(b) GDPR).
           </p>
 
           <h3>Usage statistics (only with your consent)</h3>
@@ -112,12 +111,13 @@ export default function Privacy() {
               <strong>Vercel Inc.</strong> (hosting and, with consent, analytics), as my processor.
             </li>
             <li>
-              <strong>Google</strong> (Gemini API), only when you start a deep analysis.
+              <strong>Mistral AI</strong> (France), only when you start a deep analysis.
             </li>
           </ul>
           <p>
-            Both companies are based in the United States. Transfers rely on the EU-US Data Privacy Framework or the
-            European Commission&apos;s standard contractual clauses in their data processing terms.
+            Vercel is based in the United States, so transfers to it rely on the EU-US Data Privacy Framework or the
+            European Commission&apos;s standard contractual clauses in its data processing terms. Mistral AI is an EU
+            company and keeps data in the EU by default.
           </p>
         </section>
 

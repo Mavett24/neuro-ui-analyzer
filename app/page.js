@@ -224,10 +224,10 @@ export default function Landing() {
           "Cites Hick's law, Fitts's law, Gestalt and hierarchy",
         ]}
         assumes={[
-          ["Opt-in, cloud", "sent to Gemini, so skip confidential work"],
+          ["Opt-in, cloud", "sent to Mistral (EU), skip personal data"],
           ["Models misread", "the measured numbers stay the evidence"],
         ]}
-        source="Hick 1952 · Fitts 1954 · Gemini API"
+        source="Hick 1952 · Fitts 1954 · Mistral API"
         tone="ground"
         flip
       >
