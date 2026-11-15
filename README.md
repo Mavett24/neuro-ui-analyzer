@@ -19,6 +19,7 @@
 </p>
 
 <p align="center">
+  <a href="https://neuro-ui-analyzer.vercel.app"><b>Live demo</b></a> ·
   <a href="docs/METHOD.md">Method</a> ·
   <a href="docs/ARCHITECTURE.md">Architecture</a> ·
   <a href="#getting-started">Getting started</a> ·
