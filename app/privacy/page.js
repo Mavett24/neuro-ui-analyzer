@@ -99,9 +99,6 @@ export default function Privacy() {
             in memory for up to 10 minutes. It is not written anywhere. Legal basis: legitimate interest in running a
             secure, available service (Art. 6(1)(f) GDPR).
           </p>
-
-          <h3>Waitlist</h3>
-          <p>The waitlist form on the homepage does not store or send your email address yet.</p>
         </section>
 
         <section>

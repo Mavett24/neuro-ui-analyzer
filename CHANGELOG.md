@@ -7,6 +7,11 @@ All notable changes to this project are documented here. The format follows [Kee
 ### Changed
 
 - The deep research analysis now runs on Mistral (EU-based) instead of Gemini, whose free tier can't be offered to users in the EEA.
+- The tool is free to use: the landing page now links straight to the analyzer and to a sample report.
+
+### Removed
+
+- The waitlist form.
 
 ## [0.1.0] - 2026-11-14
 

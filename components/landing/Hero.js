@@ -22,7 +22,7 @@ export default function Hero() {
         <div className="lp-hero-copy">
           <p className="lp-badge">
             <i aria-hidden="true" />
-            Private beta
+            Free beta
           </p>
           <h1>
             <span className="l1">Know what the brain</span>
@@ -33,11 +33,11 @@ export default function Hero() {
             your design engages. Before you spend a user test on it.
           </p>
           <div className="lp-actions">
-            <a className="pill lp-press" href="#waitlist">
-              Get early access
+            <a className="pill lp-press" href="/app">
+              Open the analyzer
             </a>
-            <a className="lp-ghost lp-press" href="/app">
-              Try the beta
+            <a className="lp-ghost lp-press" href="/app?src=/demo/sample.jpg">
+              Try it with a sample
             </a>
           </div>
           <dl className="lp-facts">
