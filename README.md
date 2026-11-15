@@ -129,14 +129,6 @@ This is a prediction tool, not a measurement of real users.
 - **Only filled buttons count as CTA candidates.** Ghost buttons and text links are skipped.
 - **The deep analysis can misread a screen.** The measured numbers stay the evidence.
 
-## Roadmap
-
-- [x] Gaze heatmap, scanpath playback, layout diagnostics and brain maps
-- [x] Local history with instant reopening
-- [ ] A dedicated page for each part of the report
-- [ ] Storage behind the landing page waitlist (the form is front end only for now)
-- [ ] Public deployment
-
 ## License
 
 The source code is released under the [MIT license](LICENSE).
