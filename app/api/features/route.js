@@ -37,7 +37,7 @@ export async function POST(req) {
     response_format: { type: "json_object" },
   };
 
-  // This route runs alongside the review, and the free tier allows about one request per second,
+  // This route runs alongside the review, and Mistral limits requests per second,
   // so a rate-limited first attempt waits a moment and tries the same model once more.
   const attempts = [MODELS[0], MODELS[0], ...MODELS.slice(1)];
   let last = "No model responded.";

@@ -124,6 +124,6 @@ export async function POST(req) {
     if (!RETRY_STATUSES.includes(res.status)) break;
   }
 
-  const hint = last.status === 429 ? " The free tier is busy. Wait a minute and try again." : "";
+  const hint = last.status === 429 ? " Mistral is busy. Wait a minute and try again." : "";
   return Response.json({ error: `Mistral API: ${last.message}${hint}` }, { status: last.status });
 }

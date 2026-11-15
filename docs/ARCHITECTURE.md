@@ -94,4 +94,4 @@ All assets are fetched lazily, only when a page needs them, and cached by the br
 - The first analysis downloads the model and runtime, so it's slow on a weak connection.
 - Very tall screenshots are capped at 1024 px high for the gaze model.
 - History lives in one browser. Clearing site data removes it, and nothing syncs across devices.
-- The Mistral free tier allows about one request per second, so analyses from many visitors at once can queue or fail.
+- Mistral rate-limits requests per second, so analyses from many visitors at once can queue or fail. The per-IP limit in `lib/rateLimit.js` and a prepaid balance cap the cost.
