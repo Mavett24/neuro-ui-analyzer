@@ -3,7 +3,8 @@ import "@fontsource-variable/space-grotesk";
 import "./globals.css";
 import Consent from "../components/Consent";
 
-const description = "Predicted gaze, an auditable layout check and fMRI-based brain maps for any UI screenshot.";
+const description =
+  "Predicted gaze, an auditable layout check and neuroimaging-based brain maps for any UI screenshot.";
 
 // The favicon, Apple icon and social image come from the icon, apple-icon and opengraph-image files in app/.
 export const metadata = {

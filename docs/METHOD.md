@@ -46,7 +46,7 @@ All computed from pixels, with no AI (`lib/heuristics.js`). The image is analyze
 
 **Maps** (`public/brain/`)
 
-Ten [NeuroQuery](https://neuroquery.org) meta-analytic z-maps (Dockès et al., 2020), each predicted from about 13,000 published fMRI studies: visual processing, attention, working memory load, colour, reading, faces, objects, scenes, reward and decision making. They are shown on the ICBM152 cortical surface and as MRI slices with AAL region names.
+Ten [NeuroQuery](https://neuroquery.org) meta-analytic z-maps (Dockès et al., 2020), each predicted from about 13,000 published neuroimaging studies: visual processing, attention, working memory load, colour, reading, faces, objects, scenes, reward and decision making. They are shown on the ICBM152 cortical surface and as MRI slices with AAL region names.
 
 **Weights** (`lib/brain.js`)
 
