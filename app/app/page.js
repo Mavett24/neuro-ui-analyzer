@@ -514,7 +514,7 @@ export default function Analyzer() {
               <p className="eyebrow">03 Brain</p>
               <h2>Regions likely engaged</h2>
               <p className="sub">
-                An estimate, not a scan: real meta-analytic fMRI maps, weighted by what was measured in your design.
+                An estimate, not a scan: real meta-analytic brain maps, weighted by what was measured in your design.
               </p>
               {!result ? (
                 <div className="brain-grid" aria-hidden="true">

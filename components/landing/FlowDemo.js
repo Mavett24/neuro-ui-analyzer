@@ -47,7 +47,7 @@ const STEPS = [
     time: "under 1s",
     where: "On your device",
     title: "See which brain systems it engages",
-    body: "Real fMRI maps, weighted by what your design measured.",
+    body: "Real meta-analytic brain maps, weighted by what your design measured.",
     out: ["3D surface and MRI slices", "Every region named"],
   },
   {

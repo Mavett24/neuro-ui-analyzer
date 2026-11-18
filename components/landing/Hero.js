@@ -47,7 +47,7 @@ export default function Hero() {
             </div>
             <div>
               <dt>Brain maps</dt>
-              <dd>~13,000 fMRI studies</dd>
+              <dd>~13,000 neuroimaging studies</dd>
             </div>
             <div>
               <dt>Privacy</dt>

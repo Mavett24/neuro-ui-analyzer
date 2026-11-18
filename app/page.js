@@ -16,7 +16,7 @@ import PrivacyLinks from "../components/PrivacyLinks";
 export const metadata = {
   title: "Neuro UI Analyzer: predict how people see your interface",
   description:
-    "Predicted attention from an eye-tracking-trained gaze model, an auditable layout check and brain maps from about 13,000 fMRI studies. Free to use.",
+    "Predicted attention from an eye-tracking-trained gaze model, an auditable layout check and brain maps from about 13,000 neuroimaging studies. Free to use.",
 };
 
 const VOID = "#000000";
@@ -24,7 +24,7 @@ const GROUND = "#131514";
 const LIGHT = "#def0dd";
 
 const PRINCIPLES = [
-  ["data", "Grounded in data", "Eye-tracking recordings and 13,000 fMRI studies."],
+  ["data", "Grounded in data", "Eye-tracking recordings and 13,000 neuroimaging studies."],
   ["estimate", "Labelled as an estimate", "The method sits under every number."],
   ["repeat", "Repeatable", "Same image, same reading. Compare versions fairly."],
   ["private", "Private by default", "Only the opt-in review leaves your device."],
@@ -193,7 +193,7 @@ export default function Landing() {
         id="m-brain"
         name="Brain regions"
         title="Brain maps from 13,000 studies"
-        lead="Real meta-analytic fMRI maps, weighted by what was measured in your design."
+        lead="Real meta-analytic brain maps, weighted by what was measured in your design."
         how={[
           "One NeuroQuery map per function",
           "Weights from your measurements, formula shown",
