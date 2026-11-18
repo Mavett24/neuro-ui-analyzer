@@ -1,6 +1,6 @@
 {
   "name": "neuro-ui-analyzer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Predicts attention, checks layout against perception research and estimates brain-region engagement for UI screenshots.",
   "author": "Matteo Favetta (https://matteofavetta.com)",

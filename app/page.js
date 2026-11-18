@@ -10,6 +10,7 @@ import PixelGaze from "../components/landing/PixelGaze";
 import PixelBlocks from "../components/landing/PixelBlocks";
 import BrainMaps from "../components/landing/BrainMaps";
 import PixelDetect from "../components/landing/PixelDetect";
+import { VERSION } from "../lib/version";
 import PrivacyLinks from "../components/PrivacyLinks";
 
 export const metadata = {
@@ -269,7 +270,7 @@ export default function Landing() {
         <p className="lp-credits">
           Estimates for design exploration, not measurements of real users. Gaze model: UNISAL (Droste et al., 2020,
           Apache 2.0). Brain maps: NeuroQuery (Dockès et al., 2020). Region names: AAL atlas (Tzourio-Mazoyer et al.,
-          2002).
+          2002). v{VERSION}
         </p>
       </footer>
     </div>

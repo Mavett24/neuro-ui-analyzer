@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-18
+
+Launch. The tool is free to use, open source under the MIT license, and the first public release.
+
+### Added
+
+- Code of conduct, and the app version shown in the landing page footer, read from `package.json`.
+
 ### Changed
 
 - The deep research analysis now runs on Mistral (EU-based) instead of Gemini, whose free tier can't be offered to users in the EEA.
@@ -37,4 +45,5 @@ First working beta.
 - The CTA hit margin was converted with the wrong aspect ratio, which made it four times too small vertically on wide screenshots.
 - "1 hue families" now reads "1 hue family".
 
-[0.1.0]: https://github.com/mavett24/neuro-ui-analyzer/releases/tag/v0.1.0
+[1.0.0]: https://github.com/mavett24/neuro-ui-analyzer/releases/tag/v1.0.0
+[0.1.0]: https://github.com/mavett24/neuro-ui-analyzer/commits/main
